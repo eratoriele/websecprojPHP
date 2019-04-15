@@ -8,12 +8,18 @@
 	include "include.php";
     gen_header();
 	LoggedIn(2);
-	
+?>
+	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<?php	
 	if(isset($_POST["header"]) && isset($_POST["body"]))
 	{
+		require_once('recaptchalib.php');
 
-		if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"])
-		{
+   		$response = $_POST["g-recaptcha-response"];
+		$verify = new recaptchalib("6LeuJ54UAAAAAO58XWYTLN8iSBVM1HzD5YH0FNac", $response);
+		
+		if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"] || !$verify->isValid()) {
 			echo "Security Error";
 			exit();
 		}
@@ -51,6 +57,8 @@
 
 	<br>Post Body:<br>
 	<textarea name="body" style="width: 700px;height: 80px" maxlength="2000"></textarea><br>
+
+	<div class="g-recaptcha" data-sitekey="6LeuJ54UAAAAAKTGoUPSwBhvH7_6gyM33SFFxSOB"></div> <br/>
 
     <input type="submit" value="Make a post">
 	
