@@ -44,8 +44,8 @@
         echo " <p style=\"font-size: 25px\">" . htmlentities($row['PostBody']) . "</p><br><hr>";
     }
     
-    $sth=$dbh->query("SELECT * FROM websecproj.comments ORDER BY PostedOn ASC");
-	while($row = $sth->fetch( PDO::FETCH_ASSOC )){
+    $sth=$dbh->query("SELECT * FROM websecproj.comments WHERE PostID = " . $_POST["PostID"] . " ORDER BY PostedOn ASC");
+	while($row = $sth->fetch( PDO::FETCH_ASSOC)) {
 		echo "<p style=\"font-size: 11px;color: blue\"> Posted by: " . htmlentities($row['PostedBy']) . "</p>";
 		echo htmlentities($row['CommentBody']) . "<br><br><hr>";
     }
