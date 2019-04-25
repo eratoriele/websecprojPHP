@@ -24,21 +24,23 @@
 			exit();
 		}
 
-		$sql_r="INSERT INTO websecproj.posts (PostedBy, GroupID, PostHeader, PostBody) VALUES (:username, '1111', :header, :body)";
+		$sql_r="INSERT INTO websecproj.posts (PostedBy, GroupID, PostHeader, PostBody) VALUES (:username, :groups, :header, :body)";
 		//      echo $sql_r;
 		$sth=$dbh->prepare($sql_r);
 
+		$sth->bindParam(":username", $_SESSION["name"]);
+		$sth->bindParam(":groups", $_SESSION["groups"]);
 		$sth->bindParam(":header", $_POST["header"]);
 		$sth->bindParam(":body", $_POST["body"]);
-		$sth->bindParam(":username", $_SESSION["name"]);
 		$sth->execute();
 		//		var_dump($sth->errorInfo());
 	}
 
-	$sth=$dbh->query("SELECT * FROM websecproj.posts ORDER BY PostedOn DESC");
+	$sth=$dbh->query("SELECT * FROM websecproj.posts WHERE Deleted = false AND GroupID =" . $_SESSION["groups"] . " ORDER BY PostedOn DESC");
 	while($row = $sth->fetch( PDO::FETCH_ASSOC )){
 		echo "<h2>" . htmlentities($row['PostHeader']) . "</h2>";
-		echo "<p style=\"font-size: 11px;color: blue\"> Posted by: " . htmlentities($row['PostedBy']) . "</p>";
+		echo "<p style=\"font-size: 11px;color: blue\"> Posted by: " . htmlentities($row['PostedBy']) . 
+				" on " . htmlentities($row['PostedOn']) . "</p>";
 		echo htmlentities($row['PostBody']) . "<br><br>";
 		
 		echo "<form action=\"./comments.php\" method=\"post\">";

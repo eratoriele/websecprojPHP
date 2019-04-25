@@ -79,6 +79,7 @@ function DoLogin()
         $sth->execute();
         
         $_SESSION["name"]=$_POST["username"];
+        $_SESSION["groups"] = $groups;
         LoggedIn(0);
 
     }
