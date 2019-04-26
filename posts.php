@@ -47,6 +47,13 @@
 			echo "<input type=\"submit\" value=\"See Comments\">";
 			echo "<input type=\"hidden\" name=\"PostID\" value=\"" . htmlentities($row['PostID']) . "\"></form>";
 
+		if ($_SESSION["name"] === $row['PostedBy'] || $_SESSION["admin"]){
+		echo "<form action=\"./delete.php\" method=\"post\">";
+			echo "<input type=\"submit\" value=\"Delete\">";
+			echo "<input type=\"hidden\" name=\"delete_post\" value=\"" . htmlentities($row['PostID']) . "\"></form>";
+		}
+
+
 		echo "<hr>";
 	}
 	$_SESSION["csrf_token"]=hash("sha256",rand().rand()."secret");

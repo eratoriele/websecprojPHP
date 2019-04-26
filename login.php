@@ -45,6 +45,7 @@ function DoLogin()
     if(!empty($result) && password_verify($_GET["password"], $result[0]["HashedPassword"])) {
         $_SESSION["name"]=$result[0]["Username"];
         $_SESSION["groups"] = $result[0]["Groups"];
+        $_SESSION["admin"] = $result[0]["admin"] == "1" ? true : false;
         LoggedIn(0);
     }
     else {

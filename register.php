@@ -19,6 +19,7 @@ else
 }
 function ShowLoginForm()
 {
+    echo ctype_alnum('1234');
     ?>
     <form class="form-signin" method="post">
         <h2 class="form-signin-heading">Register</h2>
@@ -58,7 +59,7 @@ function DoLogin()
 
         if (($_POST["q1"] == "0" || $_POST["q1"] == "1") && ($_POST["q2"] == "0" || $_POST["q2"] == "1") &&
             ($_POST["q3"] == "0" || $_POST["q3"] == "1") && ($_POST["q4"] == "0" || $_POST["q4"] == "1") &&
-            ctype_alnum($_POST["username"] && ctype_alnum($_POST["password"]))) {
+            ctype_alnum($_POST["username"]) && ctype_alnum($_POST["password"])) {
 
             $groups = $_POST["q1"] . $_POST["q2"] . $_POST["q3"] . $_POST["q4"];
         }
@@ -82,6 +83,7 @@ function DoLogin()
         
         $_SESSION["name"]=$_POST["username"];
         $_SESSION["groups"] = $groups;
+        $_SESSION["admin"] = false;
         LoggedIn(0);
 
     }
