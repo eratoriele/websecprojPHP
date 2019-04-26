@@ -1,6 +1,5 @@
 <?php
-function gen_header()
-{
+function gen_header() {
     ?>
     <head>
         <link rel="stylesheet" href="bootstrap.min.css">
@@ -11,12 +10,10 @@ function gen_header()
     <?php
 }
 
-function footer()
-{
+function footer() {
     echo "</div></body></html>";
 }
-function LoggedIn($active)
-{
+function LoggedIn($active) {
 
 ?>
      <ul class="nav nav-pills" role="tablist">
