@@ -80,7 +80,7 @@ function DoLogin() {
         $sth->execute();
         
         $_SESSION["name"] = $_POST["username"];             // Define variables
-        $_SESSION["groups"] = $groups;                      
+        $_SESSION["groups"] = $groups;                      // Might delete "groups" later so that database handles it
         $_SESSION["admin"] = false;                         // A newly registered account will not be an admin
 
 

@@ -13,20 +13,21 @@
 	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <?php	
-	if(isset($_POST["header"]) && isset($_POST["body"])) {			// If a comment is made
-		
+	if(isset($_POST["header"]) && isset($_POST["body"])) {			// If a post is made
+
 		require_once('recaptchalib.php');
 
    		$response = $_POST["g-recaptcha-response"];
 		$verify = new recaptchalib("6LeuJ54UAAAAAO58XWYTLN8iSBVM1HzD5YH0FNac", $response);
 		
-		if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"] || !$verify->isValid()) {
+		if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"] || !$verify->isValid()) {			// Token is for XSS attacks, together with captcha
 			echo "Security Error";
+			echo '<a href="./">Go back</a><br>';
 			exit();
 		}
 
 		$sql_r="INSERT INTO websecproj.posts (PostedBy, GroupID, PostHeader, PostBody) VALUES (:username, :groups, :header, :body)";
-		//      echo $sql_r;
+											// Might delete GroupID from here so that database handles it
 		$sth=$dbh->prepare($sql_r);
 
 		$sth->bindParam(":username", $_SESSION["name"]);
@@ -38,28 +39,32 @@
 	}
 
 	$sth=$dbh->query("SELECT * FROM websecproj.posts WHERE Deleted = false AND GroupID =" . $_SESSION["groups"] . " ORDER BY PostedOn DESC");
-	while($row = $sth->fetch( PDO::FETCH_ASSOC )){
+					/* Order by newest post on top. Might change it so comments also push posts higher 
+					 * Get EVERY post that is not deleted and in the same group.
+					 * TODO: Add neighbouring groups, Might limit the amount gotten and add a page system	*/
+
+	while($row = $sth->fetch( PDO::FETCH_ASSOC )){				// I don't know why i bothered with this instead of
+																// just closing the php tag, but i will keep it in 
 		echo "<h2>" . htmlentities($row['PostHeader']) . "</h2>";
 		echo "<p style=\"font-size: 11px;color: blue\"> Posted by: " . htmlentities($row['PostedBy']) . 
 				" on " . htmlentities($row['PostedOn']) . "</p>";
 		echo htmlentities($row['PostBody']) . "<br><br>";
 		
-		echo "<form action=\"./comments.php\" method=\"post\">";
+		echo "<form action=\"./comments.php\" method=\"post\">";		// ew
 			echo "<input type=\"submit\" value=\"See Comments\">";
 			echo "<input type=\"hidden\" name=\"PostID\" value=\"" . htmlentities($row['PostID']) . "\"></form>";
 
-		if ($_SESSION["name"] === $row['PostedBy'] || $_SESSION["admin"]){
-		echo "<form action=\"./delete.php\" method=\"post\">";
+		if ($_SESSION["name"] === $row['PostedBy'] || $_SESSION["admin"]){		// Only the post owner or an admin can delete posts
+		echo "<form action=\"./delete.php\" method=\"post\">";					// If a post is deleted, so are all the comments. This is handleed at database
 			echo "<input type=\"submit\" value=\"Delete\">";
 			echo "<input type=\"hidden\" name=\"delete_post\" value=\"" . htmlentities($row['PostID']) . "\"></form>";
 		}
 
-
 		echo "<hr>";
 	}
-	$_SESSION["csrf_token"]=hash("sha256",rand().rand()."secret");
+	$_SESSION["csrf_token"]=hash("sha256",rand().rand());
 ?>
-<form method="post">
+<form method="post">	
 	<br>
     Create a new post:<br>
 	Post Header:<br>
