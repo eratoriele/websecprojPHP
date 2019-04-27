@@ -4,22 +4,19 @@ include "database.php";
 include "include.php";
 gen_header();
 ?>
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>         <!-- Required(?) by captcha -->
 <?php
-if(isset($_SESSION["name"]))
-{
-    LoggedIn(0);
+if(isset($_SESSION["name"])) {
+    LoggedIn(0);                        // If already logged in the current session, i.e. didn't "log out", directly enter
 }
-else
-{
+else {
     if(isset($_POST["username"]) && isset($_POST["password"]))
-        DoLogin();
-    else
+        DoLogin();                                              // instead of creating a new file, logging in is
+    else                                                        // in the same file
         ShowLoginForm();
 }
-function ShowLoginForm()
-{
-    echo ctype_alnum('1234');
+function ShowLoginForm() {
+
     ?>
     <form class="form-signin" method="post">
         <h2 class="form-signin-heading">Register</h2>
@@ -48,31 +45,32 @@ function ShowLoginForm()
 <?php
 }
 
-function DoLogin()
-{
+function DoLogin() {
+
     require_once('recaptchalib.php');
 
     $response = $_POST["g-recaptcha-response"];
     $verify = new recaptchalib("6LeuJ54UAAAAAO58XWYTLN8iSBVM1HzD5YH0FNac", $response);
 
-    if ($verify->isValid()){
+    if ($verify->isValid()){                // If captcha is succesfull
 
         if (($_POST["q1"] == "0" || $_POST["q1"] == "1") && ($_POST["q2"] == "0" || $_POST["q2"] == "1") &&
             ($_POST["q3"] == "0" || $_POST["q3"] == "1") && ($_POST["q4"] == "0" || $_POST["q4"] == "1") &&
-            ctype_alnum($_POST["username"]) && ctype_alnum($_POST["password"])) {
-
+            ctype_alnum($_POST["username"]) && ctype_alnum($_POST["password"])) {       // If all the question results are 0 or 1,
+                                                                                        // also both un and pw are only alphanumeric
             $groups = $_POST["q1"] . $_POST["q2"] . $_POST["q3"] . $_POST["q4"];
         }
-        else{
+        else {
             echo "Please input correctly<br>";
             echo '<a href="./">Go back</a><br>';
             exit();
         }
 
-        $hpw = password_hash($_POST["password"], PASSWORD_DEFAULT);
+        $hpw = password_hash($_POST["password"], PASSWORD_DEFAULT);         // No need for pebble, as the code is available online anyway
 
         global $dbh;
         $sql_query="INSERT INTO websecproj.users (Username, HashedPassword, Groups) VALUES (:user, :hpw, :groups)";
+                                                 // Rest of the values are defaulted.
 
         $sth=$dbh->prepare($sql_query);
 
@@ -81,11 +79,12 @@ function DoLogin()
         $sth->bindParam(":groups", $groups);
         $sth->execute();
         
-        $_SESSION["name"]=$_POST["username"];
-        $_SESSION["groups"] = $groups;
-        $_SESSION["admin"] = false;
-        LoggedIn(0);
+        $_SESSION["name"] = $_POST["username"];             // Define variables
+        $_SESSION["groups"] = $groups;                      
+        $_SESSION["admin"] = false;                         // A newly registered account will not be an admin
 
+
+        LoggedIn(0);
     }
 }
 

@@ -1,19 +1,20 @@
 <?php
-    //stored XSS attack
-
     session_start();
-    if(!isset($_SESSION["name"]))
+	if(!isset($_SESSION["name"])) {
+		echo "Please log in<br>";						// If tried to be accesed without logging in
+		echo '<a href="./">Go back</a><br>';
 		exit();
+	}
     include "database.php";
 	include "include.php";
     gen_header();
-	LoggedIn(2);
+	LoggedIn(1);
 ?>
 	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <?php	
-	if(isset($_POST["header"]) && isset($_POST["body"]))
-	{
+	if(isset($_POST["header"]) && isset($_POST["body"])) {			// If a comment is made
+		
 		require_once('recaptchalib.php');
 
    		$response = $_POST["g-recaptcha-response"];
