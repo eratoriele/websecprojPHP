@@ -10,7 +10,7 @@
     gen_header();
 	LoggedIn(1);
 ?>
-	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+	<script src="https://www.google.com/recaptcha/api.js" async defer></script> 
 
 <?php	
 	if(isset($_POST["header"]) && isset($_POST["body"])) {			// If a post is made
@@ -19,21 +19,30 @@
 
    		$response = $_POST["g-recaptcha-response"];
 		$verify = new recaptchalib("6LeuJ54UAAAAAO58XWYTLN8iSBVM1HzD5YH0FNac", $response);
-		
-		if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"] || !$verify->isValid()) {			// Token is for XSS attacks, together with captcha
+
+		// Token is for XSS attacks, together with captcha
+		if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"] || !$verify->isValid()) {		
 			echo "Security Error";
 			echo '<a href="./">Go back</a><br>';
 			exit();
 		}
 
-		$sql_r="INSERT INTO websecproj.posts (PostedBy, GroupID, PostHeader, PostBody) VALUES (:username, :groups, :header, :body)";
-											// Might delete GroupID from here so that database handles it
+		$image_dir = NULL;
+		if ($_FILES["fileToUpload"]["name"] != '') {		// upload an image if there is any provided
+			require "upload.php";
+			$image_dir = $target_file;
+		}
+		
+		// Might delete GroupID from here so that database handles it
+		$sql_r="INSERT INTO websecproj.posts (PostedBy, GroupID, PostHeader, PostBody, Image) VALUES (:username, :groups, :header, :body, :image)";
+		
 		$sth=$dbh->prepare($sql_r);
 
 		$sth->bindParam(":username", $_SESSION["name"]);
 		$sth->bindParam(":groups", $_SESSION["groups"]);
 		$sth->bindParam(":header", $_POST["header"]);
 		$sth->bindParam(":body", $_POST["body"]);
+		$sth->bindParam(":image", $image_dir);
 		$sth->execute();
 		//		var_dump($sth->errorInfo());
 	}
@@ -64,24 +73,21 @@
 	}
 	$_SESSION["csrf_token"]=hash("sha256",rand().rand());
 ?>
-<form method="post">	
+<form method="post" enctype="multipart/form-data">	
 	<br>
     Create a new post:<br>
 	Post Header:<br>
-    <input name="header" style="width: 700px;height: 35px" maxlength="100" minlength="10"></textarea>
+    <input name="header" style="width: 700px;height: 35px" maxlength="100" minlength="1"></textarea>
 
 	<br>Post Body:<br>
 	<textarea name="body" style="width: 700px;height: 80px" maxlength="2000"></textarea><br>
 
 	<div class="g-recaptcha" data-sitekey="6LeuJ54UAAAAAKTGoUPSwBhvH7_6gyM33SFFxSOB"></div> <br/>
 
+	Select image to upload: (JPG, JPEG, PNG) (Optional) (File name shouldn't be longer than 200 chars)
+	<input type="file" name="fileToUpload" id="fileToUpload">
+
     <input type="submit" value="Make a post">
 	
     <input type="hidden" name="csrf_token" value="<?php echo $_SESSION["csrf_token"] ?>">
-</form>
-
-<form action="./upload.php" method="post" enctype="multipart/form-data">
-    Select image to upload: (only JPG, JPEG, PNG)
-    <input type="file" name="fileToUpload" id="fileToUpload">
-    <input type="submit" value="Upload Image" name="submit">
 </form>
