@@ -13,6 +13,14 @@
 	<script src="https://www.google.com/recaptcha/api.js" async defer></script> 
 
 <?php	
+
+	$page = 0;
+	if (isset($_GET["page"]))
+		$page = (int) $_GET["page"];		// If a non-integer is given, turns it into 0
+	if ($page < 0) 
+		$page = 0;
+	
+
 	if(isset($_POST["header"]) && isset($_POST["body"])) {			// If a post is made
 
 		require_once('recaptchalib.php');
@@ -47,17 +55,31 @@
 		//		var_dump($sth->errorInfo());
 	}
 
-	$sth=$dbh->query("SELECT * FROM websecproj.posts WHERE Deleted = false AND GroupID =" . $_SESSION["groups"] . " ORDER BY PostedOn DESC");
+	$sth=$dbh->query("SELECT * FROM websecproj.posts" . 
+					" WHERE Deleted = false AND GroupID =" . 
+					$_SESSION["groups"] . 
+					" ORDER BY PostedOn DESC" . 
+					" LIMIT " . ($page*5) . ", 5");
 					/* Order by newest post on top. Might change it so comments also push posts higher 
 					 * Get EVERY post that is not deleted and in the same group.
-					 * TODO: Add neighbouring groups, Might limit the amount gotten and add a page system	*/
+					 * TODO: Add neighbouring groups	*/
+
+	$i = 0;		// Counts how many entries in the query, and decides to put next page button or not
 
 	while($row = $sth->fetch( PDO::FETCH_ASSOC )){				// I don't know why i bothered with this instead of
-																// just closing the php tag, but i will keep it in 
+																// just closing the php tag, but i will keep it in
+		$i++;
 		echo "<h2>" . htmlentities($row['PostHeader']) . "</h2>";
 		echo "<p style=\"font-size: 11px;color: blue\"> Posted by: " . htmlentities($row['PostedBy']) . 
 				" on " . htmlentities($row['PostedOn']) . "</p>";
-		echo htmlentities($row['PostBody']) . "<br><br>";
+		if ($row['Image'] != NULL)
+			echo "<img height=\"400\" src=" . htmlentities($row['Image']) . "><br>";
+
+		// If the body is too long, don't show all the text on the screen at once
+		if (strlen($row['PostBody']) > 100)
+			echo  substr(htmlentities($row['PostBody']), 1, 100) . "...<br><br>";
+		else
+			echo htmlentities($row['PostBody']) . "<br><br>";
 		
 		echo "<form action=\"./comments.php\" method=\"post\">";		// ew
 			echo "<input type=\"submit\" value=\"See Comments\">";
@@ -70,9 +92,27 @@
 		}
 
 		echo "<hr>";
+
 	}
+
+	echo "<form action=\"./posts.php\" method=\"get\">";
+	if ($page !== 0)
+		echo "<input type=\"submit\" value=\"Previous Page\">";
+	echo "<input type=\"hidden\" name=\"page\" value=\"" . ($page - 1) . "\" ></form>";
+
+	echo "<form action=\"./posts.php\" method=\"get\">";
+		if ($i === 5)
+			echo "<input type=\"submit\" value=\"Next Page\">";
+		echo "<input type=\"hidden\" name=\"page\" value=\"" . ($page + 1) . "\" ></form>";
+
+
+	echo "<br><br>";
+
+
 	$_SESSION["csrf_token"]=hash("sha256",rand().rand());
 ?>
+
+
 <form method="post" enctype="multipart/form-data">	
 	<br>
     Create a new post:<br>

@@ -23,6 +23,20 @@
         $uploadOk = 0;
     }
 
+    if (strpos($target_file, " ")) {
+        $tmpOldStrLength = strlen(" ");
+        while (($offset = strpos($target_file, " ")) !== false) {
+            $target_file = substr_replace($target_file, "_", $offset, $tmpOldStrLength);
+          }
+    }
+
+    if (strpos($target_file, "/")) {
+        $tmpOldStrLength = strlen("/");
+        while (($offset = strpos($target_file, "/")) !== false) {
+            $target_file = substr_replace($target_file, "_", $offset, $tmpOldStrLength);
+          }
+    }
+
     // Check if file already exists
     if (file_exists($target_file)) {
         for(;file_exists($target_file);){       // Adds random char to end and check again
@@ -40,7 +54,7 @@
     if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" ) {
         echo "Sorry, only JPG, JPEG, PNG files are allowed.";
         $uploadOk = 0;
-    } 
+    }
 
     // Check if $uploadOk is set to 0 by an error
     if ($uploadOk == 0) {
