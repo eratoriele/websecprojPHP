@@ -42,7 +42,8 @@
 		}
 		
 		// Might delete GroupID from here so that database handles it
-		$sql_r="INSERT INTO websecproj.posts (PostedBy, GroupID, PostHeader, PostBody, Image) VALUES (:username, :groups, :header, :body, :image)";
+		$sql_r="INSERT INTO websecproj.posts (PostedBy, GroupID, PostHeader, PostBody, Image)" .
+				 " VALUES (:username, :groups, :header, :body, :image)";
 		
 		$sth=$dbh->prepare($sql_r);
 
@@ -69,9 +70,13 @@
 	while($row = $sth->fetch( PDO::FETCH_ASSOC )){				// I don't know why i bothered with this instead of
 																// just closing the php tag, but i will keep it in
 		$i++;
-		echo "<h2>" . htmlentities($row['PostHeader']) . "</h2>";
-		echo "<p style=\"font-size: 11px;color: blue\"> Posted by: " . htmlentities($row['PostedBy']) . 
-				" on " . htmlentities($row['PostedOn']) . "</p>";
+		echo "<a href=\"./comments.php?PostID=" .  htmlentities($row['PostID']) . "\">" . 
+			"<h2>" . htmlentities($row['PostHeader']) . "</h2></a>";		// Makes the header hyper text as well
+
+		echo "<p style=\"font-size: 11px;color: #3B4D45\"> Posted by: <a href=\"./user_profile.php?User=" .
+				$row['PostedBy'] . "\">" . htmlentities($row['PostedBy']) . 	
+				"</a> on " . htmlentities($row['PostedOn']) . "</p>";		// Hyper text on name to user's profile
+
 		if ($row['Image'] != NULL)
 			echo "<img height=\"400\" src=" . htmlentities($row['Image']) . "><br>";
 

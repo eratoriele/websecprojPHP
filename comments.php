@@ -40,12 +40,33 @@
 
     }
 
-    $sth=$dbh->query("SELECT * FROM websecproj.posts WHERE PostID = " . $_GET["PostID"] . " AND deleted = false");
+    $sql_r = ("SELECT * FROM websecproj.posts WHERE PostID = :postid AND Deleted = false");
+
+    $sth=$dbh->prepare($sql_r);
+
+    $sth->bindParam(":postid", $_GET["PostID"]);
+
+    $sth->execute();
 
     if($row = $sth->fetch( PDO::FETCH_ASSOC)) {
+
+        if ($row['GroupID'] !== $_SESSION["groups"]){           // If the post is outside of user's group
+            echo "<h1>This is not a post in your group</h1>";
+            echo '<a href="./posts.php">Go back</a><br>';
+            exit();
+        }
+    
         echo "<h1>" . htmlentities($row['PostHeader']) . "</h1>";
-        echo "<p style=\"font-size: 12px;color: blue\"> Posted by: " . htmlentities($row['PostedBy']). " on " . htmlentities($row['PostedOn']) . "</p>";
+        echo "<p style=\"font-size: 12px;color: #3B4D45\"> Posted by: " . htmlentities($row['PostedBy']) .
+             " on " . htmlentities($row['PostedOn']) . "</p>";
+        if ($row['Image'] != NULL)
+            echo "<img height=\"400\" src=" . htmlentities($row['Image']) . "><br>";
         echo " <p style=\"font-size: 25px\">" . htmlentities($row['PostBody']) . "</p><br><hr>";
+    }
+    else {
+        echo "<h1>Post you are looking for is deleted, or does not exist</h1>";
+        echo '<a href="./posts.php">Go back</a><br>';
+        exit();
     }
     
     $sth=$dbh->query("SELECT * FROM websecproj.comments WHERE PostID = " . $_GET["PostID"] . " ORDER BY PostedOn ASC");
