@@ -81,7 +81,7 @@
 		else
 			echo htmlentities($row['PostBody']) . "<br><br>";
 		
-		echo "<form action=\"./comments.php\" method=\"post\">";		// ew
+		echo "<form action=\"./comments.php\" method=\"get\">";		// ew
 			echo "<input type=\"submit\" value=\"See Comments\">";
 			echo "<input type=\"hidden\" name=\"PostID\" value=\"" . htmlentities($row['PostID']) . "\"></form>";
 
