@@ -17,7 +17,7 @@ function LoggedIn($active) {
 
 ?>
      <ul class="nav nav-pills" role="tablist">
-        <li role="presentation" <?php echo ($active==0?"class=\"active\"":"") ?> ><a href="./login.php">Home</a></li>
+        <li role="presentation" <?php echo ($active==0?"class=\"active\"":"") ?> ><a href="<?php echo "./user_profile.php?User=" . $_SESSION["name"] ?>">Profile</a></li>
         <li role="presentation" <?php echo ($active==1?"class=\"active\"":"") ?> ><a href="./posts.php">Posts</a></li>
         <li role="presentation" <?php echo ($active==2?"class=\"active\"":"") ?> ><a href="./logout.php">Logout</a></li>
     </ul>

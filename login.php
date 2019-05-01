@@ -42,7 +42,7 @@ function DoLogin() {
         $_SESSION["groups"] = $result[0]["Groups"];
         $_SESSION["admin"] = $result[0]["admin"] == "1" ? true : false;             // Define variables
         
-        LoggedIn(0);
+        LoggedIn(-1);
     }
     else {
         ShowLoginForm();

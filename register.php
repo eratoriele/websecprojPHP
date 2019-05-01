@@ -84,7 +84,7 @@ function DoLogin() {
         $_SESSION["admin"] = false;                         // A newly registered account will not be an admin
 
 
-        LoggedIn(0);
+        LoggedIn(-1);
     }
 }
 

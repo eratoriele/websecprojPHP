@@ -2,16 +2,35 @@
     session_start();
 	if(!isset($_SESSION["name"])) {
 		echo "Please log in<br>";						// If tried to be accesed without logging in
-		echo '<a href="./">Go back</a><br>';            // TODO Maybe delete this later?
+		echo '<a href="./">Go back</a><br>';            // TODO Maybe allow to look at profiles without logging in?
 		exit();
 	}
     include "database.php";
 	include "include.php";
     gen_header();
-	LoggedIn(-1);
+    if (isset($_GET["User"]) && ($_GET["User"] === $_SESSION["name"]))
+        LoggedIn(0);
+    else
+	    LoggedIn(-1);
 ?>
 
 <?php
+
+    if (isset($_POST["uploaded"])) {
+        if ($_FILES["fileToUpload"]["name"] != '') {		// If a picture is given to upload as a profile pic
+            require "upload.php";
+            $image_dir = $target_file;                      // Address of the given file
+            
+            $sql_r="UPDATE websecproj.users" .
+                    " SET ProfilePic = :pic" .
+                    " WHERE Username = :user"; 
+
+            $sth=$dbh->prepare($sql_r);
+            $sth->bindParam(":pic", $image_dir);
+            $sth->bindParam(":user", $_SESSION["name"]);
+            $sth->execute();
+        }
+    }
 
     $sql_r="SELECT * FROM websecproj.users" . 
             " WHERE Username = :user"; 
@@ -24,6 +43,30 @@
     if($row = $sth->fetch( PDO::FETCH_ASSOC)) {
 
         echo "<h1> User " . htmlentities($row["Username"]) . "</h1>";
+
+		if ($row['ProfilePic'] != NULL) {
+            echo "<img height=\"400\" src=" . htmlentities($row['ProfilePic']) . "><br>";       // Display profiel picture
+
+            if (isset($_GET["User"]) && ($_GET["User"] === $_SESSION["name"])){
+                echo "<form method=\"post\" enctype=\"multipart/form-data\">";                       // New profile pic
+                    echo "Uplaod a new profile picture: (JPG, JPEG, PNG) (File name shouldn't be longer than 200 chars)";
+                    echo "<input type=\"file\" name=\"fileToUpload\" id=\"fileToUpload\">";
+                    echo "<input type=\"hidden\" name=\"uploaded\" value=\"1\">";
+                    echo "<input type=\"submit\" value=\"Change your profile picture\"></form>";
+            }
+        }
+        else {
+            echo "<h3>This user does not have a profile picture </h3>";
+
+            if (isset($_GET["User"]) && ($_GET["User"] === $_SESSION["name"])) {
+                echo "<form method=\"post\" enctype=\"multipart/form-data\">";                       // Upload a profile pic
+                    echo "Uplaod a profile picture: (JPG, JPEG, PNG) (File name shouldn't be longer than 200 chars)";
+                    echo "<input type=\"file\" name=\"fileToUpload\" id=\"fileToUpload\">";
+                    echo "<input type=\"hidden\" name=\"uploaded\" value=\"1\">";
+                    echo "<input type=\"submit\" value=\"Set a profile picture\"></form>";
+            }
+        }
+
         echo "<h3> Group: " . htmlentities($row["Groups"]) . "</h3>";
         if ($row["admin"]) {
             echo "<p style=\"font-size: 20px; color: blue\">This user is an admin</p>";
