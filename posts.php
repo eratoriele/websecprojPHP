@@ -93,7 +93,7 @@
 		if ($_SESSION["name"] === $row['PostedBy'] || $_SESSION["admin"]){		// Only the post owner or an admin can delete posts
 		echo "<form action=\"./delete.php\" method=\"post\">";					// If a post is deleted, so are all the comments. This is handleed at database
 			echo "<input type=\"submit\" value=\"Delete\">";
-			echo "<input type=\"hidden\" name=\"delete_post\" value=\"" . htmlentities($row['PostID']) . "\"></form>";
+			echo "<input type=\"hidden\" name=\"delete_post\" value=\"" . $row['PostID'] . "\"></form>"; // TODO make this less retarded
 		}
 
 		echo "<hr>";

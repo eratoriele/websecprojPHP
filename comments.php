@@ -77,7 +77,9 @@
         exit();
     }
     
-    $sth=$dbh->query("SELECT * FROM websecproj.comments WHERE PostID = " . $_GET["PostID"] . " ORDER BY PostedOn ASC");
+    $sth=$dbh->query("SELECT * FROM websecproj.comments" .
+                     " WHERE PostID = " . $_GET["PostID"] . 
+                     " AND Deleted = false ORDER BY PostedOn ASC");
 	while($row = $sth->fetch( PDO::FETCH_ASSOC)) {
 		echo "<p style=\"font-size: 11px;color: #3B4D45\"> Posted by: <a href=\"./user_profile.php?User=" .
 				$row['PostedBy'] . "\">" . htmlentities($row['PostedBy']) . 	
@@ -86,8 +88,15 @@
         if ($row['Image'] != NULL)
             echo "<img height=\"400\" src=" . htmlentities($row['Image']) . "><br>";
 
-        echo htmlentities($row['CommentBody']) . "<br><br><hr>";
-        
+        echo htmlentities($row['CommentBody']);
+
+        if ($_SESSION["name"] === $row['PostedBy'] || $_SESSION["admin"]) {		    // Only the post owner or an admin can delete posts
+            echo "<form action=\"./delete.php\" method=\"post\">";					// If a post is deleted, so are all the comments. This will be handled at database
+                echo "<input type=\"submit\" value=\"Delete\">";                    // ^ This may be redundant as you can't see comments without post anyway
+                echo "<input type=\"hidden\" name=\"delete_comment\" value=\"" . $row['CommentID'] . "\"></form>";      // TODO make this less retarded
+        }
+
+        echo "<br><br><hr>";
     }
 
     $_SESSION["csrf_token"]=hash("sha256",rand().rand());
