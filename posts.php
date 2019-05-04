@@ -21,7 +21,7 @@
 		$page = 0;
 	
 
-	if(isset($_POST["header"]) && isset($_POST["body"])) {			// If a post is made
+	if(isset($_POST["header"]) && $_POST["header"] != NULL) {			// If a post is made
 
 		require_once('recaptchalib.php');
 
