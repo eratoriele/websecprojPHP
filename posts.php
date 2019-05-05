@@ -10,8 +10,6 @@
     gen_header();
 	LoggedIn(1);
 ?>
-	<script src="https://www.google.com/recaptcha/api.js" async defer></script> 
-
 <?php	
 
 	$page = 0;
@@ -23,13 +21,8 @@
 
 	if(isset($_POST["header"]) && $_POST["header"] != NULL) {			// If a post is made
 
-		require_once('recaptchalib.php');
-
-   		$response = $_POST["g-recaptcha-response"];
-		$verify = new recaptchalib("6LeuJ54UAAAAAO58XWYTLN8iSBVM1HzD5YH0FNac", $response);
-
 		// Token is for XSS attacks, together with captcha
-		if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"] || !$verify->isValid()) {		
+		if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"]) {		
 			echo "Security Error";
 			echo '<a href="./">Go back</a><br>';
 			exit();
@@ -57,7 +50,7 @@
 	}
 
 	$sth=$dbh->query("SELECT * FROM websecproj.posts" . 
-					" WHERE Deleted = false AND GroupID =" . 
+					" WHERE CommunityID = 0 AND Deleted = false AND GroupID =" . 	// Not a community post, not deleted and in the same group
 					$_SESSION["groups"] . 
 					" ORDER BY PostedOn DESC" . 
 					" LIMIT " . ($page*5) . ", 5");
@@ -82,7 +75,7 @@
 
 		// If the body is too long, don't show all the text on the screen at once
 		if (strlen($row['PostBody']) > 100)
-			echo  substr(htmlentities($row['PostBody']), 1, 100) . "...<br><br>";
+			echo substr(htmlentities($row['PostBody']), 1, 100) . "...<br><br>";
 		else
 			echo htmlentities($row['PostBody']) . "<br><br>";
 		
@@ -122,12 +115,10 @@
 	<br>
     Create a new post:<br>
 	Post Header:<br>
-    <input name="header" style="width: 700px;height: 35px" maxlength="100" minlength="1"></textarea>
+    <input name="header" style="width: 700px;height: 35px" maxlength="100" minlength="1">
 
 	<br>Post Body:<br>
 	<textarea name="body" style="width: 700px;height: 80px" maxlength="2000"></textarea><br>
-
-	<div class="g-recaptcha" data-sitekey="6LeuJ54UAAAAAKTGoUPSwBhvH7_6gyM33SFFxSOB"></div> <br/>
 
 	Select image to upload: (JPG, JPEG, PNG) (Optional) (File name shouldn't be longer than 200 chars)
 	<input type="file" name="fileToUpload" id="fileToUpload">
