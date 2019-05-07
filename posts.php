@@ -49,14 +49,18 @@
 		//		var_dump($sth->errorInfo());
 	}
 
-	$sth=$dbh->query("SELECT * FROM websecproj.posts" . 
-					" WHERE CommunityID = 0 AND Deleted = false AND GroupID =" . 	// Not a community post, not deleted and in the same group
-					$_SESSION["groups"] . 
-					" ORDER BY PostedOn DESC" . 
-					" LIMIT " . ($page*5) . ", 5");
-					/* Order by newest post on top. Might change it so comments also push posts higher 
-					 * Get EVERY post that is not deleted and in the same group.
-					 * TODO: Add neighbouring groups	*/
+	$sql_r = "SELECT * FROM websecproj.posts" . 
+			" WHERE CommunityName = 'mainboard' AND Deleted = false" .
+			" AND GroupID = :groupid" . 	// Not a community post, not deleted and in the same group
+			" ORDER BY PostedOn DESC" . 
+			" LIMIT " . ($page*5) . ", 5";
+			/* Order by newest post on top. Might change it so comments also push posts higher 
+				* Get EVERY post that is not deleted and in the same group.
+				* TODO: Add neighbouring groups	*/
+
+	$sth = $dbh->prepare($sql_r);
+	$sth->bindParam(":groupid", $_SESSION["groups"]);
+	$sth->execute();
 
 	$i = 0;		// Counts how many entries in the query, and decides to put next page button or not
 

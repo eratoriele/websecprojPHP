@@ -77,9 +77,14 @@
         exit();
     }
     
-    $sth=$dbh->query("SELECT * FROM websecproj.comments" .
-                     " WHERE PostID = " . $_GET["PostID"] . 
-                     " AND Deleted = false ORDER BY PostedOn ASC");
+    $sql_r = "SELECT * FROM websecproj.comments" .
+            " WHERE PostID = :postid" . 
+            " AND Deleted = false ORDER BY PostedOn ASC";      // Get all comments associated with that post
+
+    $sth = $dbh->prepare($sql_r);
+    $sth->bindParam(":postid", $_GET["PostID"]);
+    $sth->execute();
+
 	while($row = $sth->fetch( PDO::FETCH_ASSOC)) {
 		echo "<p style=\"font-size: 11px;color: #3B4D45\"> Posted by: <a href=\"./user_profile.php?User=" .
 				$row['PostedBy'] . "\">" . htmlentities($row['PostedBy']) . 	
