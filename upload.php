@@ -1,8 +1,5 @@
 <?php
 
-//function uploadimage() {
-
-
     $target_dir = "../uploads/";        // Didnt want to upload every image to repo. Might be a wrong move?
     $safename =  basename($_FILES["fileToUpload"]["name"]);
 
@@ -57,5 +54,5 @@
             exit();
         }
     }
-//}
+
 ?>

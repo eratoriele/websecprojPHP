@@ -3,7 +3,9 @@ session_start();
 include "database.php";
 include "include.php";
 gen_header();
-
+?>
+<body style="background-color:#dbc6a8">
+<?php
 
 if(isset($_SESSION["name"])) {
     LoggedIn(0);                        // If already logged in the current session, i.e. didn't "log out", directly enter

@@ -10,6 +10,7 @@
     gen_header();
 	LoggedIn(1);
 ?>
+<body style="background-color:#dbc6a8">
 <?php	
 
 	$page = 0;
@@ -49,11 +50,13 @@
 		//		var_dump($sth->errorInfo());
 	}
 
+	$pagelimit = $page * 5;		// variable to put in LIMIT query of the select
+
 	$sql_r = "SELECT * FROM websecproj.posts" . 
 			" WHERE CommunityName = 'mainboard' AND Deleted = false" .
 			" AND GroupID = :groupid" . 	// Not a community post, not deleted and in the same group
 			" ORDER BY PostedOn DESC" . 
-			" LIMIT " . ($page*5) . ", 5";
+			" LIMIT " . ($page * 5) . " , 5";
 			/* Order by newest post on top. Might change it so comments also push posts higher 
 				* Get EVERY post that is not deleted and in the same group.
 				* TODO: Add neighbouring groups	*/
@@ -131,3 +134,4 @@
 	
     <input type="hidden" name="csrf_token" value="<?php echo $_SESSION["csrf_token"] ?>">
 </form>
+</body>

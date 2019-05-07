@@ -4,6 +4,7 @@ include "database.php";
 include "include.php";
 gen_header();
 ?>
+<body style="background-color:#dbc6a8">
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>         <!-- Required(?) by captcha -->
 <?php
 if(isset($_SESSION["name"])) {
