@@ -49,8 +49,6 @@
             //		var_dump($sth->errorInfo());
         }
     
-        $pagelimit = $page * 5;		// variable to put in LIMIT query of the select
-    
         $sql_r = "SELECT * FROM websecproj.posts" . 
                 " WHERE CommunityName = :communityname AND Deleted = false" .
                 " AND GroupID = :groupid" . 	// Not a community post, not deleted and in the same group
@@ -70,7 +68,7 @@
         while($row = $sth->fetch( PDO::FETCH_ASSOC )){				// I don't know why i bothered with this instead of
                                                                     // just closing the php tag, but i will keep it in
             $i++;
-            echo "<a href=\"./comments.php?PostID=" .  htmlentities($row['PostID']) . "\">" . 
+            echo "<a href=\"./communitycomments.php?PostID=" .  htmlentities($row['PostID']) . "\">" . 
                 "<h2>" . htmlentities($row['PostHeader']) . "</h2></a>";		// Makes the header hyper text as well
     
             echo "<p style=\"font-size: 11px;color: #3B4D45\"> Posted by: <a href=\"./user_profile.php?User=" .
@@ -86,7 +84,7 @@
             else
                 echo htmlentities($row['PostBody']) . "<br><br>";
             
-            echo "<form action=\"./comments.php\" method=\"get\">";		// ew
+            echo "<form action=\"./communitycomments.php\" method=\"get\">";		// ew
                 echo "<input type=\"submit\" value=\"See Comments\">";
                 echo "<input type=\"hidden\" name=\"PostID\" value=\"" . htmlentities($row['PostID']) . "\"></form>";
     

@@ -9,7 +9,7 @@
     include "database.php";
     include "include.php";
     gen_header();
-    LoggedIn(1);
+    LoggedIn(2);
 ?>
 	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
@@ -73,7 +73,7 @@
     }
     else {
         echo "<h1>Post you are looking for is deleted, or does not exist</h1>";
-        echo '<a href="./posts.php">Go back</a><br>';
+        echo '<a href="./login.php">Go back</a><br>';
         exit();
     }
 
@@ -111,7 +111,7 @@
     }
 
     $_SESSION["csrf_token"]=hash("sha256",rand().rand());
-    $action_url = "./comments.php?PostID=" . $_GET["PostID"];
+    $action_url = "./communitycomments.php?PostID=" . $_GET["PostID"];
 ?>
 
 <form action="<?php echo $action_url ?>" method="post" enctype="multipart/form-data">
