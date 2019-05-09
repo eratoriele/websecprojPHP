@@ -32,5 +32,24 @@ function LoggedIn($active) {
 
 }
 
+function checkLastPost() {
+
+    $datetime1 = date_create($_SESSION["lastPost"]);
+    $datetime2 = date_create(date("Y-m-d h:i:s"));
+
+    // calculates the difference between DateTime objects 
+    $interval = date_diff($datetime1, $datetime2); 
+
+    // printing result in days format 
+    $difference = $interval->format('%d') * 1440 +  $interval->format('%h') * 60 +  $interval->format('%i');
+    
+    if ($difference < 2) {
+        echo "<h1>Please wait at least 2 minutes before making another post</h1>";
+        return false;
+    }
+    else
+        return true;
+}
+
 
 ?>

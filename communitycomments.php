@@ -15,7 +15,7 @@
 
 <?php
 
-    if (isset($_POST["comment"]) && $_POST["comment"] != NULL) {                 // If a comment is made
+    if (isset($_POST["comment"]) && $_POST["comment"] != NULL && checkLastPost()) {                 // If a comment is made
 
         require_once('recaptchalib.php');
 
@@ -44,6 +44,8 @@
         $sth->bindParam(":image", $image_dir);
         $sth->execute();
         //		var_dump($sth->errorInfo());
+
+        $_SESSION["lastPost"] = date("Y-m-d h:i:s");
 
     }
 

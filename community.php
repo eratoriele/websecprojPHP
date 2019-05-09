@@ -19,7 +19,7 @@
 	if ($page < 0) 
 		$page = 0;
 	
-    if(isset($_POST["header"]) && $_POST["header"] != NULL) {			// If a post is made
+    if(isset($_POST["header"]) && $_POST["header"] != NULL && checkLastPost()) {			// If a post is made
 
         require_once('recaptchalib.php');
 
@@ -53,6 +53,8 @@
         $sth->bindParam(":image", $image_dir);
         $sth->execute();
         //		var_dump($sth->errorInfo());
+
+        $_SESSION["lastPost"] = date("Y-m-d h:i:s");
     }
 
     $sql_r = "SELECT * FROM websecproj.posts" . 

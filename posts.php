@@ -20,7 +20,7 @@
 		$page = 0;
 	
 
-	if(isset($_POST["header"]) && $_POST["header"] != NULL) {			// If a post is made
+	if(isset($_POST["header"]) && $_POST["header"] != NULL && checkLastPost()) {			// If a post is made and its been 2 minutes since last post
 
         require_once('recaptchalib.php');
 
@@ -53,6 +53,8 @@
 		$sth->bindParam(":image", $image_dir);
 		$sth->execute();
 		//		var_dump($sth->errorInfo());
+
+		$_SESSION["lastPost"] = date("Y-m-d h:i:s");
 	}
 
 	$pagelimit = $page * 5;		// variable to put in LIMIT query of the select

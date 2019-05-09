@@ -43,7 +43,8 @@ function DoLogin() {
         $_SESSION["name"] = $result[0]["Username"];
         $_SESSION["groups"] = $result[0]["Groups"];
         $_SESSION["admin"] = $result[0]["admin"] == "1" ? true : false;             // Define variables
-        
+        $_SESSION["lastPost"] = $result[0]["LastPost"];
+
         LoggedIn(-1);
     }
     else {

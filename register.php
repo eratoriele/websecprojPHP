@@ -95,7 +95,7 @@ function DoLogin() {
         $_SESSION["name"] = $_POST["username"];             // Define variables
         $_SESSION["groups"] = $groups;                      // Might delete "groups" later so that database handles it
         $_SESSION["admin"] = false;                         // A newly registered account will not be an admin
-
+        $_SESSION["lastPost"] = date("Y-m-d h:i:s");
 
         LoggedIn(-1);
     }
