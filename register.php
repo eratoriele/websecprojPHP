@@ -67,13 +67,25 @@ function DoLogin() {
             exit();
         }
 
+        global $dbh;
+        $sql_r = "SELECT * FROM websecproj.users WHERE Username=:user";
+        $sth=$dbh->prepare($sql_r);
+        $sth->bindParam(":user", $_POST["username"]);
+        $sth->execute();
+        $row = $sth->fetch( PDO::FETCH_ASSOC);
+
+        if ($row){
+            echo "Username alraedy exists.";
+            echo '<a href="./register.php">Go back</a><br>';
+            exit();
+        }
+
         $hpw = password_hash($_POST["password"], PASSWORD_DEFAULT);         // No need for pebble, as the code is available online anyway
 
-        global $dbh;
-        $sql_query="INSERT INTO websecproj.users (Username, HashedPassword, Groups) VALUES (:user, :hpw, :groups)";
+        $sql_r="INSERT INTO websecproj.users (Username, HashedPassword, Groups) VALUES (:user, :hpw, :groups)";
                                                  // Rest of the values are defaulted.
 
-        $sth=$dbh->prepare($sql_query);
+        $sth=$dbh->prepare($sql_r);
 
         $sth->bindParam(":user", $_POST["username"]);
         $sth->bindParam(":hpw", $hpw);

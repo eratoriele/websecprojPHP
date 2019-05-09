@@ -13,11 +13,18 @@
     else
 	    LoggedIn(-1);
 ?>
-
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>     
 <?php
 
+
     if (isset($_POST["uploaded"])) {
-        if ($_FILES["fileToUpload"]["name"] != '') {		// If a picture is given to upload as a profile pic
+            
+        require_once('recaptchalib.php');
+
+        $response = $_POST["g-recaptcha-response"];
+        $verify = new recaptchalib($captcha_secret, $response);
+
+        if ($_FILES["fileToUpload"]["name"] != '' && $verify->isValid()) {		// If a picture is given to upload as a profile pic
             require "upload.php";
             $image_dir = $target_file;                      // Address of the given file
             
@@ -51,6 +58,7 @@
                 echo "<form method=\"post\" enctype=\"multipart/form-data\">";                       // New profile pic
                     echo "Uplaod a new profile picture: (JPG, JPEG, PNG) (File name shouldn't be longer than 200 chars)";
                     echo "<input type=\"file\" name=\"fileToUpload\" id=\"fileToUpload\">";
+                    echo "<div class=\"g-recaptcha\" data-sitekey=\"" . $captcha_public . "\"></div> <br/>";
                     echo "<input type=\"hidden\" name=\"uploaded\" value=\"1\">";
                     echo "<input type=\"submit\" value=\"Change your profile picture\"></form>";
             }

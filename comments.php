@@ -20,7 +20,7 @@
         require_once('recaptchalib.php');
 
         $response = $_POST["g-recaptcha-response"];
-        $verify = new recaptchalib("6LeuJ54UAAAAAO58XWYTLN8iSBVM1HzD5YH0FNac", $response);
+        $verify = new recaptchalib($captcha_secret, $response);
 
         if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"] || !$verify->isValid()) {     // Token is for XSS attacks, together with captcha
             echo "Security Error";
@@ -77,7 +77,7 @@
         exit();
     }
 
-    $sql_r = "SELECT comments.CommentID, comments.PostedBy, comments.CommentBody, comments.Image, Comments.PostedOn, users.Groups" .
+    $sql_r = "SELECT comments.CommentID, comments.PostedBy, comments.CommentBody, comments.Image, comments.PostedOn, users.Groups" .
             " FROM websecproj.comments INNER JOIN websecproj.users ON comments.PostedBy = users.Username" .
             " WHERE PostID = :postid AND Deleted = false ORDER BY PostedOn ASC";
     /* Get all the comments from that post,
@@ -120,7 +120,7 @@
 
     <textarea name="comment" style="width: 700px;height: 80px" maxlength="2000"></textarea> <br>
 
-    <div class="g-recaptcha" data-sitekey="6LeuJ54UAAAAAKTGoUPSwBhvH7_6gyM33SFFxSOB"></div> <br/>
+    <div class="g-recaptcha" data-sitekey="<?php echo $captcha_public; ?>"></div> <br/>
 
     Select image to upload: (JPG, JPEG, PNG) (Optional) (File name shouldn't be longer than 200 chars)
 	<input type="file" name="fileToUpload" id="fileToUpload">

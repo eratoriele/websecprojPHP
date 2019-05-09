@@ -11,6 +11,8 @@
 	LoggedIn(2);
 ?>
 
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 <form method="post">
     Search a community:
     <input name="search" style="width: 700px;height: 35px" maxlength="100" minlength="1">
@@ -51,6 +53,7 @@
                 echo "<h3>Create a community named " . $_POST["search"] . "!</h3><br>";
                 echo "Community bio:<br>";
                 echo "<textarea name=\"bio\" style=\"width: 700px;height: 80px\" maxlength=\"2000\"></textarea><br>";
+                echo "<div class=\"g-recaptcha\" data-sitekey=\"". $captcha_public . "\"></div> <br/>";
                 echo "<input type=\"submit\" value=\"Create Community!\">";
                 echo "<input type=\"hidden\" name=\"createc\" value=\"" . $_POST["search"] . "\"></form>";
 
@@ -59,19 +62,28 @@
 
     if (isset($_POST["createc"]) && $_POST["createc"] != NULL) {            // If a new community is being created
 
-        $sql_r = "INSERT INTO websecproj.community (CommunityName, CreatedBy, CommunityBio)" .
-                " VALUES (:communityname, :createdby, :communitybio)"; 
-                
-        $sth=$dbh->prepare($sql_r);
+        require_once('recaptchalib.php');
 
-		$sth->bindParam(":communityname", $_POST["createc"]);
-		$sth->bindParam(":createdby", $_SESSION["name"]);
-		$sth->bindParam(":communitybio", $_POST["bio"]);
-        $sth->execute();
-        //      var_dump($sth->errorInfo());
+        $response = $_POST["g-recaptcha-response"];
+        $verify = new recaptchalib($captcha_secret, $response);
 
-        /*echo "<a href=\"./community.php?Community=" .  htmlentities($row['CommunityID']) . "\">" . 
-            "<h2>" . htmlentities($row['CommunityName']) . "</h2></a>";	*/                  // Forward to newly created
+        if ($verify->isValid()) {             // If captcha is correct
+
+            $sql_r = "INSERT INTO websecproj.community (CommunityName, CreatedBy, CommunityBio)" .
+                    " VALUES (:communityname, :createdby, :communitybio)"; 
+                    
+            $sth=$dbh->prepare($sql_r);
+
+            $sth->bindParam(":communityname", $_POST["createc"]);
+            $sth->bindParam(":createdby", $_SESSION["name"]);
+            $sth->bindParam(":communitybio", $_POST["bio"]);
+            $sth->execute();
+            //      var_dump($sth->errorInfo());
+
+            /*echo "<a href=\"./community.php?Community=" .  htmlentities($row['CommunityID']) . "\">" . 
+                "<h2>" . htmlentities($row['CommunityName']) . "</h2></a>";	*/                  // Forward to newly created
+
+        }
     }
 
 ?>
