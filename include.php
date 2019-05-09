@@ -3,9 +3,6 @@
 $captcha_public = "6LeuJ54UAAAAAKTGoUPSwBhvH7_6gyM33SFFxSOB";
 $captcha_secret = "6LeuJ54UAAAAAO58XWYTLN8iSBVM1HzD5YH0FNac";
 
-global $captcha_public;
-global $captcha_secret;
-
 function gen_header() {
     ?>
     <head>

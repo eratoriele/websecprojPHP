@@ -70,6 +70,7 @@
                 echo "<form method=\"post\" enctype=\"multipart/form-data\">";                       // Upload a profile pic
                     echo "Uplaod a profile picture: (JPG, JPEG, PNG) (File name shouldn't be longer than 200 chars)";
                     echo "<input type=\"file\" name=\"fileToUpload\" id=\"fileToUpload\">";
+                    echo "<div class=\"g-recaptcha\" data-sitekey=\"" . $captcha_public . "\"></div> <br/>";
                     echo "<input type=\"hidden\" name=\"uploaded\" value=\"1\">";
                     echo "<input type=\"submit\" value=\"Set a profile picture\"></form>";
             }

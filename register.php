@@ -33,7 +33,7 @@ function ShowLoginForm() {
         <h1>When making decisions, what is your train of thought?</h1>
         <input type="radio" name="q2" value="0" required> Logical <br>
         <input type="radio" name="q2" value="1" required> Emotional <br>
-        <h1>Where does the energy flow?</h1>
+        <h1>Where does your energy flow?</h1>
         <input type="radio" name="q3" value="0" required> Outwards <br>
         <input type="radio" name="q3" value="1" required> Inwards <br>
         <h1>How is your life style?</h1>
