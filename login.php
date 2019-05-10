@@ -47,7 +47,7 @@ function DoLogin() {
     $sth->execute();
     $result=$sth->fetchAll();
 
-    if(!empty($result) && password_verify($_POST["password"], $result[0]["HashedPassword"])) {
+    if(!empty($result) && password_verify($_POST["password"], $result[0]["HashedPassword"]) && $result[0]["Email_Verified"] == "1") {
         $_SESSION["name"] = $result[0]["Username"];
         $_SESSION["groups"] = $result[0]["Groups"];
         $_SESSION["admin"] = $result[0]["admin"] == "1" ? true : false;             // Define variables

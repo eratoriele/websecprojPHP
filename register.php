@@ -11,7 +11,7 @@ if(isset($_SESSION["name"])) {
     LoggedIn(0);                        // If already logged in the current session, i.e. didn't "log out", directly enter
 }
 else {
-    if(isset($_POST["username"]) && isset($_POST["password"]))
+    if(isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["email"]))
         DoLogin();                                              // instead of creating a new file, logging in is
     else                                                        // in the same file
         ShowLoginForm();
@@ -27,6 +27,8 @@ function ShowLoginForm() {
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" id="inputPassword" name="password" maxlength="20" minlength="4" class="form-control" placeholder="Password" pattern="^[a-zA-Z0-9]+$" required>
         Only alphanumeric characters <br>
+        <label for="inputEmail" class="sr-only">Email Address</label>
+        <input type="text" id="inputEmail" name="email" class="form-control" placeholder="Email Address" pattern="^[a-zA-Z0-9@._-]+$" required>
         <h1>How do you view an object?</h1>
         <input type="radio" name="q1" value="0" required> Tree rather than a forest <br>
         <input type="radio" name="q1" value="1" required> Forest rather than a tree <br>
@@ -69,6 +71,11 @@ function DoLogin() {
             echo '<a href="./">Go back</a><br>';
             exit();
         }
+        if(strlen($_POST["email"] > 320)) {
+            echo "E-mail you entered is not valid, please try another mail address";
+            echo '<a href="./">Go back</a><br>';
+            exit();
+        }
 
         global $dbh;
         $sql_r = "SELECT * FROM websecproj.users WHERE Username=:user";
@@ -84,23 +91,47 @@ function DoLogin() {
         }
 
         $hpw = password_hash($_POST["password"], PASSWORD_DEFAULT);         // No need for pebble, as the code is available online anyway
+        $mailcode = rand(1000, 9999);
 
-        $sql_r="INSERT INTO websecproj.users (Username, HashedPassword, Groups) VALUES (:user, :hpw, :groups)";
+        $sql_r="INSERT INTO websecproj.users (Username, HashedPassword, Email, emailverificationcode, Groups)" . 
+            " VALUES (:user, :hpw, :email, :emailcode, :groups)";
                                                  // Rest of the values are defaulted.
 
         $sth=$dbh->prepare($sql_r);
 
         $sth->bindParam(":user", $_POST["username"]);
         $sth->bindParam(":hpw", $hpw);
+        $sth->bindParam(":email", $_POST["email"]);
+        $sth->bindParam(":emailcode", $mailcode);
         $sth->bindParam(":groups", $groups);
         $sth->execute();
-        
-        $_SESSION["name"] = $_POST["username"];             // Define variables
-        $_SESSION["groups"] = $groups;                      // Might delete "groups" later so that database handles it
-        $_SESSION["admin"] = false;                         // A newly registered account will not be an admin
-        $_SESSION["lastPost"] = date("Y-m-d h:i:s");
 
-        LoggedIn(-1);
+        echo "An email has been sent to your account<br>";
+        echo "Currently this function is closed. No email is sent and no verification is needed.<br>";
+        echo '<a href="./login.php">Login</a><br>';
+/*
+        // Send the verification email    
+
+        $subject = 'Signup | Verification'; // Give the email a subject 
+        $message = '
+        
+        Thanks for signing up!
+        Your account has been created, you can login with the following credentials after you have activated your account by pressing the url below.
+        
+        ------------------------
+        Username: '.$_POST["username"].'
+        ------------------------
+
+        Please verify your e-mail within 2 days.
+        
+        Please click this link to activate your account:
+        http://localhost/websecprojPHP/verifyemail.php?email='.$_POST["email"].'&code='.$mailcode.'
+        
+        '; // Our message above including the link
+                            
+        $headers = 'From:websecprojmail@gmail.com' . "\r\n"; // Set from headers
+        mail($_POST["email"], $subject, $message, $headers); // Send our email
+*/
     }
 }
 
