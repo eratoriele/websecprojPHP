@@ -20,7 +20,7 @@
 		$page = 0;
 	
 
-	if(isset($_POST["header"]) && $_POST["header"] != NULL && checkLastPost()) {			// If a post is made and its been 2 minutes since last post
+	if(isset($_POST["header"]) && $_POST["header"] != NULL && strlen($_POST["header"]) >=5 && strlen($_POST["header"]) <=100 && checkLastPost()) {			// If a post is made and its been 2 minutes since last post
 
         require_once('recaptchalib.php');
 
@@ -30,6 +30,12 @@
 		// Token is for XSS attacks, together with captcha
 		if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"] || !$verify->isValid()) {		
 			echo "Security Error";
+			echo '<a href="./">Go back</a><br>';
+			exit();
+		}
+		// If body is too long
+		if (!isset($_POST["body"]) || strlen($_POST["body"]) > 2000){
+			echo "Post body is too long";
 			echo '<a href="./">Go back</a><br>';
 			exit();
 		}
@@ -129,7 +135,7 @@
 	<br>
     Create a new post:<br>
 	Post Header:<br>
-    <input name="header" style="width: 700px;height: 35px" maxlength="100" minlength="1">
+    <input name="header" style="width: 700px;height: 35px" maxlength="100" minlength="5">
 
 	<br>Post Body:<br>
 	<textarea name="body" style="width: 700px;height: 80px" maxlength="2000"></textarea><br>

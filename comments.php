@@ -15,7 +15,7 @@
 
 <?php
 
-    if (isset($_POST["comment"]) && $_POST["comment"] != NULL && checkLastPost()) {                 // If a comment is made
+    if (isset($_POST["comment"]) && $_POST["comment"] != NULL && strlen($_POST["comment"]) <= 2000 && checkLastPost()) {                 // If a comment is made
 
         require_once('recaptchalib.php');
 

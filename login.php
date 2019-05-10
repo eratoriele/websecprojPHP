@@ -21,9 +21,9 @@ function ShowLoginForm() {
     <form class="form-signin" method="post">
         <h2 class="form-signin-heading">Please sign in</h2>
         <label for="inputUser" class="sr-only">Username</label>
-        <input type="text" id="inputUser" name="username" class="form-control" placeholder="Username" required autofocus>
+        <input type="text" id="inputUser" name="username" maxlength="20" minlength="4" class="form-control" placeholder="Username" required autofocus>
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+        <input type="password" id="inputPassword" name="password" maxlength="20" minlength="4" class="form-control" placeholder="Password" required>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
     </form>
 
@@ -31,6 +31,14 @@ function ShowLoginForm() {
 }
 
 function DoLogin() {
+
+    if (strlen($_POST["username"]) < 4 || strlen($_POST["username"]) > 20 ||
+        strlen($_POST["password"]) < 4 || strlen($_POST["password"]) > 20) {
+            echo "relogin again";
+            echo '<a href="./">Go back</a><br>';
+            exit();
+        }
+
     global $dbh;
     $sql_query="SELECT * FROM websecproj.users WHERE username=:user";       // username is primary key
     $sth=$dbh->prepare($sql_query);

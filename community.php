@@ -19,7 +19,7 @@
 	if ($page < 0) 
 		$page = 0;
 	
-    if(isset($_POST["header"]) && $_POST["header"] != NULL && checkLastPost()) {			// If a post is made
+    if(isset($_POST["header"]) && $_POST["header"] != NULL && strlen($_POST["header"]) >=5 && strlen($_POST["header"]) <=100 && checkLastPost()) {			// If a post is made
 
         require_once('recaptchalib.php');
 
@@ -32,6 +32,12 @@
             echo '<a href="./">Go back</a><br>';
             exit();
         }
+        // If body is too long
+        if (!isset($_POST["body"]) || strlen($_POST["body"]) > 2000){
+			echo "Post body is too long";
+			echo '<a href="./">Go back</a><br>';
+			exit();
+		}
 
         $image_dir = NULL;
         if ($_FILES["fileToUpload"]["name"] != '') {		// upload an image if there is any provided
@@ -128,7 +134,7 @@
         <br>
         Create a new post:<br>
         Post Header:<br>
-        <input name="header" style="width: 700px;height: 35px" maxlength="100" minlength="1">
+        <input name="header" style="width: 700px;height: 35px" maxlength="100" minlength="5">
     
         <br>Post Body:<br>
         <textarea name="body" style="width: 700px;height: 80px" maxlength="2000"></textarea><br>
