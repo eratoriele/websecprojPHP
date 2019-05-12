@@ -59,11 +59,12 @@
 
     if($row = $sth->fetch( PDO::FETCH_ASSOC)) {
 
+        /*
         if ($row['GroupID'] !== $_SESSION["groups"]){           // If the post is outside of user's group
             echo "<h1>This is not a post in your group</h1>";
             echo '<a href="./posts.php">Go back</a><br>';
             exit();
-        }
+        }*/
     
         echo "<h1>" . htmlentities($row['PostHeader']) . "</h1>";
         echo "<p style=\"font-size: 12px;color: #3B4D45\"> Posted by: <a href=\"./user_profile.php?User=" .

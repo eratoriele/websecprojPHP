@@ -59,19 +59,23 @@
 
     if($row = $sth->fetch( PDO::FETCH_ASSOC)) {
 
+        /*
         if ($row['GroupID'] !== $_SESSION["groups"]){           // If the post is outside of user's group
             echo "<h1>This is not a post in your group</h1>";
             echo '<a href="./posts.php">Go back</a><br>';
             exit();
-        }
-    
+        }*/
+        echo "<div class=\"jumbotron text-center\">";
+
         echo "<h1>" . htmlentities($row['PostHeader']) . "</h1>";
         echo "<p style=\"font-size: 12px;color: #3B4D45\"> Posted by: <a href=\"./user_profile.php?User=" .
             $row['PostedBy'] . "\">" . htmlentities($row['PostedBy']) .
              "</a> on " . htmlentities($row['PostedOn']) . "</p>";
         if ($row['Image'] != NULL)
             echo "<img height=\"600\" src=" . htmlentities($row['Image']) . "><br>";
-        echo " <p style=\"font-size: 25px\">" . htmlentities($row['PostBody']) . "</p><br><hr>";
+        echo " <p style=\"font-size: 25px\">" . htmlentities($row['PostBody']) . "</p>";
+
+        echo "</div>";
     }
     else {
         echo "<h1>Post you are looking for is deleted, or does not exist</h1>";
@@ -92,7 +96,13 @@
     $sth->bindParam(":postid", $_GET["PostID"]);
     $sth->execute();
 
+    echo "<div class=\"container\">";
+    echo "<div class=\"row\">";
+
 	while($row = $sth->fetch( PDO::FETCH_ASSOC)) {
+
+        echo "<div class=\"col-sm-6\">";
+
 		echo "<p style=\"font-size: 11px;color: #3B4D45\"> Posted by: <a href=\"./user_profile.php?User=" .
 				$row['PostedBy'] . "\">" . htmlentities($row['PostedBy']) . 	
                 "</a> on " . htmlentities($row['PostedOn']) .
@@ -105,12 +115,15 @@
 
         if ($_SESSION["name"] === $row['PostedBy'] || $_SESSION["admin"]) {		    // Only the post owner or an admin can delete posts
             echo "<form action=\"./delete.php\" method=\"post\">";					// If a post is deleted, so are all the comments. This will be handled at database
-                echo "<input type=\"submit\" value=\"Delete\">";                    // ^ This may be redundant as you can't see comments without post anyway
+                                                                                    // ^ This may be redundant as you can't see comments without post anyway
+                                                                                    // TODO: you can still see them in your profile tho
+                echo "<br><button type=\"submit\" class=\"btn btn-danger\">Delete</button>";
                 echo "<input type=\"hidden\" name=\"delete_comment\" value=\"" . $row['CommentID'] . "\"></form>";      // TODO make this less retarded
         }
 
-        echo "<br><br><hr>";
+        echo "<hr></div>";
     }
+    echo "</div></div>";
 
     $_SESSION["csrf_token"]=hash("sha256",rand().rand());
     $action_url = "./comments.php?PostID=" . $_GET["PostID"];
