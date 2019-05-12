@@ -5,7 +5,7 @@ include "include.php";
 gen_header();
 ?>
 <body style="background-color:#dbc6a8">
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>         <!-- Required(?) by captcha -->
+<!--<script src="https://www.google.com/recaptcha/api.js" async defer></script>    -->     <!-- Required(?) by captcha -->
 <?php
 if(isset($_SESSION["name"])) {
     LoggedIn(0);                        // If already logged in the current session, i.e. didn't "log out", directly enter
@@ -41,7 +41,7 @@ function ShowLoginForm() {
         <h1>How is your life style?</h1>
         <input type="radio" name="q4" value="0" required> Straightforward <br>
         <input type="radio" name="q4" value="1" required> Embracing <br>
-        <div class="g-recaptcha" data-sitekey="6LeuJ54UAAAAAKTGoUPSwBhvH7_6gyM33SFFxSOB"></div> <br/>
+        <!--<div class="g-recaptcha" data-sitekey="6LebsaIUAAAAAP_1YftW7_mk2Lz5-XqJMm4BafrO"></div> <br/>-->
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
     </form>
 
@@ -50,12 +50,12 @@ function ShowLoginForm() {
 
 function DoLogin() {
 
-    require_once('recaptchalib.php');
+ /*   require_once('recaptchalib.php');
 
     $response = $_POST["g-recaptcha-response"];
-    $verify = new recaptchalib("6LeuJ54UAAAAAO58XWYTLN8iSBVM1HzD5YH0FNac", $response);
+    $verify = new recaptchalib("6LebsaIUAAAAAIpkUEH5CBrHmflalB-RC4kjxQM3", $response);*/
 
-    if ($verify->isValid()){                // If captcha is succesfull
+    //if ($verify->isValid()){                // If captcha is succesfull
 
         if (($_POST["q1"] == "0" || $_POST["q1"] == "1") && ($_POST["q2"] == "0" || $_POST["q2"] == "1") &&
             ($_POST["q3"] == "0" || $_POST["q3"] == "1") && ($_POST["q4"] == "0" || $_POST["q4"] == "1") &&
@@ -132,7 +132,7 @@ function DoLogin() {
         $headers = 'From:websecprojmail@gmail.com' . "\r\n"; // Set from headers
         mail($_POST["email"], $subject, $message, $headers); // Send our email
 */
-    }
+   // }
 }
 
 

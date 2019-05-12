@@ -1,18 +1,16 @@
 <?php
 
     $target_dir = "../uploads/";        // Didnt want to upload every image to repo. Might be a wrong move?
-    $safename =  basename($_FILES["fileToUpload"]["name"]);
+    $target_file =  basename($_FILES["fileToUpload"]["name"]);
 
-    $safename = preg_replace('/[^a-zA-Z0-9\.]/', '_', $safename);
+    $target_file = preg_replace('/[^a-zA-Z0-9\.]/', '_', $target_file);
     // Turn every non alphanumeric character
     // To _s so that file names are safe.
     // Doesn't matter since user won't see the name
     // of the files
 
-    $target_file = $target_dir . $safename;         // Name of file
-
     $uploadOk = 1;
-    $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));         // holds the file extension of the file
+    $imageFileType = strtolower(pathinfo($target_dir . $target_file,PATHINFO_EXTENSION));         // holds the file extension of the file
     
     // Check file size
     if ($_FILES["fileToUpload"]["size"] > 2000000) {         // 2 mb
@@ -20,6 +18,10 @@
         $uploadOk = 0;
         echo "Sorry, your file was not uploaded.<br>";
         exit();
+    } 
+    
+    if (file_exists($target_dir . $target_file)) {
+        for (; file_exists($target_dir . $target_file); $target_file = rand().$target_file);
     } 
 
     // Check if image file is a actual image or fake image
@@ -47,6 +49,8 @@
         exit();
     }
 
+    $target_file = $target_dir . $target_file;
+    
     // Check if $uploadOk is set to 0 by an error
     if ($uploadOk == 1) {
         // if everything is ok, try to upload file

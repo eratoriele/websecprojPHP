@@ -11,7 +11,7 @@
 	LoggedIn(2);
 ?>
 
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<!-- <script src="https://www.google.com/recaptcha/api.js" async defer></script> -->
 
 <form method="post">
     Search a community:
@@ -59,15 +59,39 @@
 
         }
     }
+    else {              // If search is not made, show 5 communities
+
+        echo "<h1>Some communities made beforehand:</h1><br><br>";
+
+        $sql_r = "SELECT * FROM websecproj.community WHERE CommunityName != 'mainboard' LIMIT 15";
+
+        $sth=$dbh->prepare($sql_r);
+        $sth->execute();
+
+        while($row = $sth->fetch( PDO::FETCH_ASSOC )){
+
+            $searchfound = true;
+
+            echo "<a href=\"./community.php?Community=" .  htmlentities($row['CommunityName']) . "\">" . 
+            "<h2>" . htmlentities($row['CommunityName']) . "</h2></a>";		// Makes the header hyper text as well
+            
+            if (strlen($row['CommunityBio']) > 100)
+			    echo substr(htmlentities($row['CommunityBio']), 1, 100) . "...<br><br><hr>";
+		    else
+			    echo htmlentities($row['CommunityBio']) . "<br><br><hr>";
+
+        }
+
+    }
 
     if (isset($_POST["createc"]) && $_POST["createc"] != NULL) {            // If a new community is being created
-
+/*
         require_once('recaptchalib.php');
 
         $response = $_POST["g-recaptcha-response"];
-        $verify = new recaptchalib($captcha_secret, $response);
+        $verify = new recaptchalib($captcha_secret, $response);*/
 
-        if ($verify->isValid()) {             // If captcha is correct
+        //if ($verify->isValid()) {             // If captcha is correct
 
             $sql_r = "INSERT INTO websecproj.community (CommunityName, CreatedBy, CommunityBio)" .
                     " VALUES (:communityname, :createdby, :communitybio)"; 
@@ -83,7 +107,7 @@
             /*echo "<a href=\"./community.php?Community=" .  htmlentities($row['CommunityID']) . "\">" . 
                 "<h2>" . htmlentities($row['CommunityName']) . "</h2></a>";	*/                  // Forward to newly created
 
-        }
+        //}
     }
 
 ?>

@@ -1,7 +1,7 @@
 <?php
 
-$captcha_public = "6LeuJ54UAAAAAKTGoUPSwBhvH7_6gyM33SFFxSOB";
-$captcha_secret = "6LeuJ54UAAAAAO58XWYTLN8iSBVM1HzD5YH0FNac";
+$captcha_public = "6LebsaIUAAAAAP_1YftW7_mk2Lz5-XqJMm4BafrO";
+$captcha_secret = "6LebsaIUAAAAAIpkUEH5CBrHmflalB-RC4kjxQM3";
 
 function gen_header() {
     ?>

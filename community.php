@@ -10,7 +10,7 @@
     gen_header();
 	LoggedIn(2);
 ?>
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<!-- <script src="https://www.google.com/recaptcha/api.js" async defer></script> -->
 <?php
 
 	$page = 0;
@@ -21,13 +21,13 @@
 	
     if(isset($_POST["header"]) && $_POST["header"] != NULL && strlen($_POST["header"]) >=5 && strlen($_POST["header"]) <=100 && checkLastPost()) {			// If a post is made
 
-        require_once('recaptchalib.php');
+      /*  require_once('recaptchalib.php');
 
         $response = $_POST["g-recaptcha-response"];
-        $verify = new recaptchalib($captcha_secret, $response);
+        $verify = new recaptchalib($captcha_secret, $response);*/
 
         // Token is for XSS attacks, together with captcha
-        if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"] || !$verify->isValid()) {		
+        if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"] /*|| !$verify->isValid()*/) {		
             echo "Security Error";
             echo '<a href="./">Go back</a><br>';
             exit();
@@ -142,7 +142,7 @@
         Select image to upload: (JPG, JPEG, PNG) (Optional) (File name shouldn't be longer than 200 chars)
         <input type="file" name="fileToUpload" id="fileToUpload">
 
-        <div class="g-recaptcha" data-sitekey="<?php echo $captcha_public; ?>"></div> <br/>
+<!--       <div class="g-recaptcha" data-sitekey="<?php echo $captcha_public; ?>"></div> <br/> -->
     
         <input type="submit" value="Make a post">
         

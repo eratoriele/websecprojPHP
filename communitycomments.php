@@ -11,18 +11,18 @@
     gen_header();
     LoggedIn(2);
 ?>
-	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<!--	<script src="https://www.google.com/recaptcha/api.js" async defer></script> -->
 
 <?php
 
     if (isset($_POST["comment"]) && $_POST["comment"] != NULL && strlen($_POST["comment"]) <= 2000 && checkLastPost()) {                 // If a comment is made
 
-        require_once('recaptchalib.php');
+      /*  require_once('recaptchalib.php');
 
         $response = $_POST["g-recaptcha-response"];
-        $verify = new recaptchalib($captcha_secret, $response);
+        $verify = new recaptchalib($captcha_secret, $response);*/
 
-        if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"] || !$verify->isValid()) {     // Token is for XSS attacks, together with captcha
+        if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"] /*|| !$verify->isValid()*/) {     // Token is for XSS attacks, together with captcha
             echo "Security Error";
             echo '<a href="./">Go back</a><br>';
 			exit();
@@ -122,7 +122,7 @@
 
     <textarea name="comment" style="width: 700px;height: 80px" maxlength="2000"></textarea> <br>
 
-    <div class="g-recaptcha" data-sitekey="<?php echo $captcha_public; ?>"></div> <br/>
+<!--    <div class="g-recaptcha" data-sitekey="<?php echo $captcha_public; ?>"></div> <br/> -->
 
     Select image to upload: (JPG, JPEG, PNG) (Optional) (File name shouldn't be longer than 200 chars)
 	<input type="file" name="fileToUpload" id="fileToUpload">
