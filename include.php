@@ -7,6 +7,31 @@ function gen_header() {
     ?>
     <head>
         <link rel="stylesheet" href="bootstrap.min.css">
+        <style>
+            .card {
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            transition: 0.4s;
+            width: 100%;
+            border-radius: 10px;
+            }
+
+            .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            }
+
+            img {
+            border-radius: 10px 10px 0 0;
+            }
+
+            .container {
+            padding: 2px 16px;
+            }
+            
+            li{
+            max-width:550px;
+            word-wrap:break-word;
+            }
+        </style>
     </head>
     <body style="background-color:#dbc6a8">
         <div class="container">

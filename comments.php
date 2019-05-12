@@ -72,7 +72,7 @@
             $row['PostedBy'] . "\">" . htmlentities($row['PostedBy']) .
              "</a> on " . htmlentities($row['PostedOn']) . "</p>";
         if ($row['Image'] != NULL)
-            echo "<img height=\"600\" src=" . htmlentities($row['Image']) . "><br>";
+            echo "<img height=\"600\" src=" . htmlentities($row['Image']) . "><br><br>";
         echo " <p style=\"font-size: 25px\">" . htmlentities($row['PostBody']) . "</p>";
 
         echo "</div>";
@@ -98,19 +98,40 @@
 
     echo "<div class=\"container\">";
     echo "<div class=\"row\">";
+  
 
 	while($row = $sth->fetch( PDO::FETCH_ASSOC)) {
 
         echo "<div class=\"col-sm-6\">";
 
+        echo "<div class=\"card\">"; 
+            if ($row['Image'] != NULL)
+                echo "<img  src=\"" . htmlentities($row['Image']) . "\" alt=\"Image\" style=\"width:100%\">";
+            echo "<div class=\"container\">";
+                echo "<li><h4><b>" . htmlentities($row['CommentBody']) . "</b></h4></li>";
+                echo "<p style=\"font-size: 11px;color: #3B4D45\"> Posted by: <a href=\"./user_profile.php?User=" .
+				    $row['PostedBy'] . "\">" . htmlentities($row['PostedBy']) . 	
+                    "</a> on " . htmlentities($row['PostedOn']) .
+                    " on group " . htmlentities($row['Groups']) .  "</p>";		// Hyper text on name to user's profile
+                if ($_SESSION["name"] === $row['PostedBy'] || $_SESSION["admin"]) {		    // Only the post owner or an admin can delete posts
+                    echo "<form action=\"./delete.php\" method=\"post\">";					// If a post is deleted, so are all the comments. This will be handled at database
+                                                                                            // ^ This may be redundant as you can't see comments without post anyway
+                                                                                            // TODO: you can still see them in your profile tho
+                        echo "<br><button type=\"submit\" class=\"btn btn-danger\">Delete</button>";
+                        echo "<input type=\"hidden\" name=\"delete_comment\" value=\"" . $row['CommentID'] . "\"></form>";      // TODO make this less retarded
+                }
+        echo "</div></div><br><br></div>";
+/*
 		echo "<p style=\"font-size: 11px;color: #3B4D45\"> Posted by: <a href=\"./user_profile.php?User=" .
 				$row['PostedBy'] . "\">" . htmlentities($row['PostedBy']) . 	
                 "</a> on " . htmlentities($row['PostedOn']) .
                 " on group " . htmlentities($row['Groups']) .  "</p>";		// Hyper text on name to user's profile
         
+                1
         if ($row['Image'] != NULL)
-            echo "<img height=\"400\" src=" . htmlentities($row['Image']) . "><br>";
+            echo "<img height=\"400\" src=" . htmlentities($row['Image']) . "><br><br>";
 
+            1
         echo htmlentities($row['CommentBody']);
 
         if ($_SESSION["name"] === $row['PostedBy'] || $_SESSION["admin"]) {		    // Only the post owner or an admin can delete posts
@@ -119,9 +140,9 @@
                                                                                     // TODO: you can still see them in your profile tho
                 echo "<br><button type=\"submit\" class=\"btn btn-danger\">Delete</button>";
                 echo "<input type=\"hidden\" name=\"delete_comment\" value=\"" . $row['CommentID'] . "\"></form>";      // TODO make this less retarded
-        }
+        }*/
 
-        echo "<hr></div>";
+        //echo "<hr></div>";
     }
     echo "</div></div>";
 

@@ -19,7 +19,7 @@
 	if ($page < 0) 
 		$page = 0;
 	
-    if(isset($_POST["header"]) && $_POST["header"] != NULL && strlen($_POST["header"]) >=5 && strlen($_POST["header"]) <=100 && checkLastPost()) {			// If a post is made
+    if(isset($_POST["header"]) && $_POST["header"] != NULL && strlen($_POST["header"]) >=5 && strlen($_POST["header"]) <=100 /*&& checkLastPost()*/) {			// If a post is made
 
       /*  require_once('recaptchalib.php');
 
@@ -82,7 +82,40 @@
     while($row = $sth->fetch( PDO::FETCH_ASSOC )){				// I don't know why i bothered with this instead of
                                                                 // just closing the php tag, but i will keep it in
         $i++;
-        echo "<a href=\"./communitycomments.php?PostID=" .  htmlentities($row['PostID']) . "\">" . 
+        
+        echo "<div class=\"jumbotron text-center\">";
+		echo "<a href=\"./comments.php?PostID=" .  htmlentities($row['PostID']) . "\">" . 
+			"<h2>" . htmlentities($row['PostHeader']) . "</h2></a>";		// Makes the header hyper text as well
+
+		echo "<p style=\"font-size: 11px;color: #3B4D45\"> Posted by: <a href=\"./user_profile.php?User=" .
+				$row['PostedBy'] . "\">" . htmlentities($row['PostedBy']) . 	
+				"</a> on " . htmlentities($row['PostedOn']) . " on group " . htmlentities($row['GroupID']) . "</p>";		// Hyper text on name to user's profile
+
+		if ($row['Image'] != NULL)
+			echo "<img height=\"400\" src=" . htmlentities($row['Image']) . "><br><br>";
+
+		// If the body is too long, don't show all the text on the screen at once
+		if (strlen($row['PostBody']) > 300)
+			echo substr(htmlentities($row['PostBody']), 1, 300) . "...<br><br>";
+		else
+			echo htmlentities($row['PostBody']) . "<br><br>";
+	
+		echo "<div class=\"container\">";
+		echo "<div class=\"row\">";
+
+		echo "<div class=\"text-center\">";  
+		echo "<form action=\"./comments.php\" method=\"get\">";		// ew
+			echo "<button type=\"submit\" class=\"btn btn-default\">See Comments</button>";
+			echo "<input type=\"hidden\" name=\"PostID\" value=\"" . htmlentities($row['PostID']) . "\"></form>";
+
+		echo "</div><div class=\"text-right\">";  
+		if ($_SESSION["name"] === $row['PostedBy'] || $_SESSION["admin"]){		// Only the post owner or an admin can delete posts
+		echo "<form action=\"./delete.php\" method=\"post\">";					// If a post is deleted, so are all the comments.
+			echo "<br><button type=\"submit\" class=\"btn btn-danger\">Delete</button>";
+			echo "<input type=\"hidden\" name=\"delete_post\" value=\"" . htmlentities($row['PostID']) . "\"></form>"; // TODO make this less retarded
+
+        
+/*        echo "<a href=\"./communitycomments.php?PostID=" .  htmlentities($row['PostID']) . "\">" . 
             "<h2>" . htmlentities($row['PostHeader']) . "</h2></a>";		// Makes the header hyper text as well
 
         echo "<p style=\"font-size: 11px;color: #3B4D45\"> Posted by: <a href=\"./user_profile.php?User=" .
@@ -106,46 +139,45 @@
         echo "<form action=\"./delete.php\" method=\"post\">";					// If a post is deleted, so are all the comments. This is handleed at database
             echo "<input type=\"submit\" value=\"Delete\">";
             echo "<input type=\"hidden\" name=\"delete_post\" value=\"" . $row['PostID'] . "\"></form>"; // TODO make this less retarded
-        }
+        */  }
 
-        echo "<hr>";
+        echo "</div></div></div></div>";
 
     }
     
-    echo "<form action=\"./posts.php\" method=\"get\">";
-    if ($page !== 0)
-        echo "<input type=\"submit\" value=\"Previous Page\">";
-    echo "<input type=\"hidden\" name=\"page\" value=\"" . ($page - 1) . "\" ></form>";
+    echo "<form action=\"./community.php\" method=\"get\">";
+        if ($page !== 0)
+            echo "<button type=\"submit\" class=\"btn btn-primary\">Previous page</button>";
+        echo "<input type=\"hidden\" name=\"page\" value=\"" . ($page - 1) . "\" >";
+        echo "<input type=\"hidden\" name=\"Community\" value=\"" . $_GET["Community"] . "\" ></form>";
 
-    echo "<form action=\"./posts.php\" method=\"get\">";
+    echo "<form action=\"./community.php\" method=\"get\">";
         if ($i === 5)
-            echo "<input type=\"submit\" value=\"Next Page\">";
-        echo "<input type=\"hidden\" name=\"page\" value=\"" . ($page + 1) . "\" ></form>";
-
-
-    echo "<br><br>";
+            echo "<button type=\"submit\" class=\"btn btn-primary\">Next page</button>";
+        echo "<input type=\"hidden\" name=\"page\" value=\"" . ($page + 1) . "\" >";
+        echo "<input type=\"hidden\" name=\"Community\" value=\"" . $_GET["Community"] . "\" ></form>";
 
 
     $_SESSION["csrf_token"]=hash("sha256",rand().rand());
 ?>
     
     
-    <form method="post" enctype="multipart/form-data">	
-        <br>
-        Create a new post:<br>
-        Post Header:<br>
-        <input name="header" style="width: 700px;height: 35px" maxlength="100" minlength="5">
-    
-        <br>Post Body:<br>
-        <textarea name="body" style="width: 700px;height: 80px" maxlength="2000"></textarea><br>
-    
-        Select image to upload: (JPG, JPEG, PNG) (Optional) (File name shouldn't be longer than 200 chars)
-        <input type="file" name="fileToUpload" id="fileToUpload">
+<form method="post" enctype="multipart/form-data">	
+    <br>
+    Create a new post:<br>
+    Post Header:<br>
+    <input name="header" style="width: 700px;height: 35px" maxlength="100" minlength="5">
+
+    <br>Post Body:<br>
+    <textarea name="body" style="width: 700px;height: 80px" maxlength="2000"></textarea><br>
+
+    Select image to upload: (JPG, JPEG, PNG) (Optional) (File name shouldn't be longer than 200 chars)
+    <input type="file" name="fileToUpload" id="fileToUpload">
 
 <!--       <div class="g-recaptcha" data-sitekey="<?php echo $captcha_public; ?>"></div> <br/> -->
+
+    <input type="submit" value="Make a post">
     
-        <input type="submit" value="Make a post">
-        
-        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION["csrf_token"] ?>">
-    </form>
-    </body>
+    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION["csrf_token"] ?>">
+</form>
+</div></body>
