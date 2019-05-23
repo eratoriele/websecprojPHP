@@ -13,7 +13,7 @@
 
         if ($_SESSION["name"] === $row['PostedBy'] || $_SESSION["admin"]) {
 
-            $sql_r="UPDATE websecproj.posts SET Deleted = 1 WHERE PostID = :postid";
+            $sql_r="INSERT INTO websecproj.deleted (PostID) values(:postid)";
             $sth=$dbh->prepare($sql_r);
 
             $sth->bindParam(":postid", $_POST["delete_post"]);
@@ -36,7 +36,7 @@
 
         if ($_SESSION["name"] === $row['PostedBy'] || $_SESSION["admin"]) {
 
-            $sql_r="UPDATE websecproj.comments SET Deleted = 1 WHERE CommentID = :commentid";
+            $sql_r="INSERT INTO websecproj.deleted (CommentID) VALUES (:commentid)";
             $sth=$dbh->prepare($sql_r);
 
             $sth->bindParam(":commentid", $_POST["delete_comment"]);

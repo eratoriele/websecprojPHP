@@ -108,7 +108,7 @@
             if ($row['Image'] != NULL)
                 echo "<img  src=\"" . htmlentities($row['Image']) . "\" alt=\"Image\" style=\"width:100%\">";
             echo "<div class=\"container\">";
-                echo "<li><h4><b>" . htmlentities($row['CommentBody']) . "</b></h4></li>";
+                echo "<h4><b>" . htmlentities($row['CommentBody']) . "</b></h4>";
                 echo "<p style=\"font-size: 11px;color: #3B4D45\"> Posted by: <a href=\"./user_profile.php?User=" .
 				    $row['PostedBy'] . "\">" . htmlentities($row['PostedBy']) . 	
                     "</a> on " . htmlentities($row['PostedOn']) .

@@ -11,8 +11,7 @@
 <br><br><br>
 
 <div class="jumbotron text-center">
-  <h1>This website (not named)</h1>
-  <p>Login or something, idk</p> 
+  <h1>PPfroum</h1>
 </div>
 
 <form action="./login.php" class="form-signin" method="post">

@@ -27,7 +27,7 @@
         $verify = new recaptchalib($captcha_secret, $response);*/
 
         // Token is for XSS attacks, together with captcha
-        if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"] /*|| !$verify->isValid()*/) {		
+        if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"]) {		
             echo "Security Error";
             echo '<a href="./">Go back</a><br>';
             exit();
@@ -104,7 +104,7 @@
 		echo "<div class=\"row\">";
 
 		echo "<div class=\"text-center\">";  
-		echo "<form action=\"./comments.php\" method=\"get\">";		// ew
+		echo "<form action=\"./communitycomments.php\" method=\"get\">";		// ew
 			echo "<button type=\"submit\" class=\"btn btn-default\">See Comments</button>";
 			echo "<input type=\"hidden\" name=\"PostID\" value=\"" . htmlentities($row['PostID']) . "\"></form>";
 

@@ -27,7 +27,7 @@ function gen_header() {
             padding: 2px 16px;
             }
             
-            li{
+            h4{
             max-width:550px;
             word-wrap:break-word;
             }
