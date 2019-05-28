@@ -8,18 +8,42 @@
     include "database.php";
 	include "include.php";
     gen_header();
-	LoggedIn(2);
+    LoggedIn(2);
 ?>
 
-<!-- <script src="https://www.google.com/recaptcha/api.js" async defer></script> -->
 
 <form method="post">
     Search a community:
     <input name="search" style="width: 700px;height: 35px" maxlength="100" minlength="1">
     <input type="submit" value="Search">
+
 </form>
 
 <?php
+
+    if (isset($_POST["createc"]) && $_POST["createc"] != NULL) {            // If a new community is being created
+
+        if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"]) {		
+            echo "Security Error";
+            session_destroy();
+            echo '<a href="./">Go back</a><br>';
+            exit();
+        }
+
+        $sql_r = "INSERT INTO websecproj.community (CommunityName, CreatedBy, CommunityBio)" .
+                " VALUES (:communityname, :createdby, :communitybio)"; 
+                
+        $sth=$dbh->prepare($sql_r);
+
+        $sth->bindParam(":communityname", $_POST["createc"]);
+        $sth->bindParam(":createdby", $_SESSION["name"]);
+        $sth->bindParam(":communitybio", $_POST["bio"]);
+        $sth->execute();
+        //      var_dump($sth->errorInfo());
+
+    }
+    
+    $_SESSION["csrf_token"]=hash("sha256",rand().rand());
 
     if (isset($_POST["search"]) && $_POST["search"] != NULL) {              // If a search is made
 
@@ -55,7 +79,8 @@
                 echo "<textarea name=\"bio\" style=\"width: 700px;height: 80px\" maxlength=\"2000\"></textarea><br>";
                 echo "<div class=\"g-recaptcha\" data-sitekey=\"". $captcha_public . "\"></div> <br/>";
                 echo "<input type=\"submit\" value=\"Create Community!\">";
-                echo "<input type=\"hidden\" name=\"createc\" value=\"" . $_POST["search"] . "\"></form>";
+                echo "<input type=\"hidden\" name=\"createc\" value=\"" . $_POST["search"] . "\">";
+                echo "<input type=\"hidden\" name=\"csrf_token\" value=\"" . $_SESSION["csrf_token"] . "\"></form>";
 
         }
     }
@@ -84,31 +109,6 @@
 
     }
 
-    if (isset($_POST["createc"]) && $_POST["createc"] != NULL) {            // If a new community is being created
-/*
-        require_once('recaptchalib.php');
-
-        $response = $_POST["g-recaptcha-response"];
-        $verify = new recaptchalib($captcha_secret, $response);*/
-
-        //if ($verify->isValid()) {             // If captcha is correct
-
-            $sql_r = "INSERT INTO websecproj.community (CommunityName, CreatedBy, CommunityBio)" .
-                    " VALUES (:communityname, :createdby, :communitybio)"; 
-                    
-            $sth=$dbh->prepare($sql_r);
-
-            $sth->bindParam(":communityname", $_POST["createc"]);
-            $sth->bindParam(":createdby", $_SESSION["name"]);
-            $sth->bindParam(":communitybio", $_POST["bio"]);
-            $sth->execute();
-            //      var_dump($sth->errorInfo());
-
-            /*echo "<a href=\"./community.php?Community=" .  htmlentities($row['CommunityID']) . "\">" . 
-                "<h2>" . htmlentities($row['CommunityName']) . "</h2></a>";	*/                  // Forward to newly created
-
-        //}
-    }
 
 ?>
 

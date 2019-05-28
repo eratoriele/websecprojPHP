@@ -10,7 +10,6 @@
     gen_header();
 	LoggedIn(2);
 ?>
-<!-- <script src="https://www.google.com/recaptcha/api.js" async defer></script> -->
 <?php
 
 	$page = 0;
@@ -19,14 +18,14 @@
 	if ($page < 0) 
 		$page = 0;
 	
-    if(isset($_POST["header"]) && $_POST["header"] != NULL && strlen($_POST["header"]) >=5 && strlen($_POST["header"]) <=100 /*&& checkLastPost()*/) {			// If a post is made
+    if(isset($_POST["header"]) && $_POST["header"] != NULL && strlen($_POST["header"]) >=5 && strlen($_POST["header"]) <=100) {			// If a post is made
 
       /*  require_once('recaptchalib.php');
 
         $response = $_POST["g-recaptcha-response"];
         $verify = new recaptchalib($captcha_secret, $response);*/
 
-        // Token is for XSS attacks, together with captcha
+        // Token is for XSS attacks
         if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"]) {		
             echo "Security Error";
             echo '<a href="./">Go back</a><br>';
@@ -91,8 +90,10 @@
 				$row['PostedBy'] . "\">" . htmlentities($row['PostedBy']) . 	
 				"</a> on " . htmlentities($row['PostedOn']) . " on group " . htmlentities($row['GroupID']) . "</p>";		// Hyper text on name to user's profile
 
-		if ($row['Image'] != NULL)
-			echo "<img height=\"400\" src=" . htmlentities($row['Image']) . "><br><br>";
+        
+        if ($row['Image'] != NULL)
+            echo "<img height=\"400\" src=" . htmlentities($row['Image']) . "><br><br>";
+
 
 		// If the body is too long, don't show all the text on the screen at once
 		if (strlen($row['PostBody']) > 300)
@@ -173,8 +174,6 @@
 
     Select image to upload: (JPG, JPEG, PNG) (Optional) (File name shouldn't be longer than 200 chars)
     <input type="file" name="fileToUpload" id="fileToUpload">
-
-<!--       <div class="g-recaptcha" data-sitekey="<?php echo $captcha_public; ?>"></div> <br/> -->
 
     <input type="submit" value="Make a post">
     

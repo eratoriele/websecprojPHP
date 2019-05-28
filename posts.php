@@ -29,6 +29,7 @@
 		// Token is for XSS attacks, together with captcha
 		if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"] /*|| !$verify->isValid()*/) {		
 			echo "Security Error";
+			session_destroy();
 			echo '<a href="./">Go back</a><br>';
 			exit();
 		}
