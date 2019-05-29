@@ -1,0 +1,5 @@
+
+<Files "(upload.php|database.php|verifyemail.php)">
+    Order allow,deny
+    deny from all
+</Files>
