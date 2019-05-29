@@ -20,10 +20,6 @@
 	
     if(isset($_POST["header"]) && $_POST["header"] != NULL && strlen($_POST["header"]) >=5 && strlen($_POST["header"]) <=100) {			// If a post is made
 
-      /*  require_once('recaptchalib.php');
-
-        $response = $_POST["g-recaptcha-response"];
-        $verify = new recaptchalib($captcha_secret, $response);*/
 
         // Token is for XSS attacks
         if (!isset($_POST["csrf_token"]) || $_SESSION["csrf_token"]!=$_POST["csrf_token"]) {		
