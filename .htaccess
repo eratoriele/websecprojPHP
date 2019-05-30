@@ -1,5 +1,16 @@
 
-<Files "(upload.php|database.php|verifyemail.php)">
-    Order allow,deny
+<files "upload.php">
+    order deny,allow
     deny from all
-</Files>
+</files>
+
+<files "database.php">
+    order deny,allow
+    deny from all
+</files>
+
+
+<files "verifyemail.php">
+    order deny,allow
+    deny from all
+</files>
