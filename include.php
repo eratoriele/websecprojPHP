@@ -67,7 +67,7 @@ function checkLastPost() {
     // printing result in days format 
     $difference = $interval->format('%d') * 1440 +  $interval->format('%h') * 60 +  $interval->format('%i');
     
-    if ($difference < 2) {
+    if ($difference < 1) {
         echo "<h1>Please wait at least 2 minutes before making another post</h1>";
         return false;
     }

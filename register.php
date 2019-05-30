@@ -78,19 +78,21 @@ function DoLogin() {
         }
 
         global $dbh;
-        $sql_r = "SELECT * FROM websecproj.users WHERE Username=:user";
+        $sql_r = "SELECT * FROM websecproj.users WHERE Username=:user OR Email=:mail";
         $sth=$dbh->prepare($sql_r);
         $sth->bindParam(":user", $_POST["username"]);
+        $sth->bindParam(":mail", $_POST["email"]);
         $sth->execute();
         $row = $sth->fetch( PDO::FETCH_ASSOC);
 
         if ($row){
-            echo "Username alraedy exists.";
+            echo "Username or email already exists.";
             echo '<a href="./register.php">Go back</a><br>';
             exit();
         }
 
-        $hpw = password_hash($_POST["password"], PASSWORD_DEFAULT);         // No need for pebble, as the code is available online anyway
+        // No need for pebble, as the code is available online anyway
+        $hpw = password_hash($_POST["password"], PASSWORD_DEFAULT);
         $mailcode = rand(1000, 9999);
 
         $sql_r="INSERT INTO websecproj.users (Username, HashedPassword, Email, emailverificationcode, Groups)" . 

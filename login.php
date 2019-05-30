@@ -32,6 +32,22 @@ function ShowLoginForm() {
 
 function DoLogin() {
 
+    if (!isset($_SESSION["brute_prevent"]))         // If this is the first time they are logging in, set this to 0
+        $_SESSION["brute_prevent"] = 0;             // Aim of this is to prevent brute force attacks
+                                                    // by forcing the attacker out
+
+    else if ($_SESSION["brute_prevent"] >= 5) {     // If they have failed 5 times, ban the session for a while
+        echo "<h1>Too many wrong logins</h1>";
+        $_SESSION["brute_date"] = date_create(date("Y-m-d h:i:s"));
+    }
+    if (isset($_SESSION["brute_date"]) &&
+        date_diff($_SESSION["brute_date"], date_create(date("Y-m-d h:i:s")))->format('%i') < 20) {
+        // If the attacker attacked at least 5 times, make them wait for 20 minutes until they can try to login
+        // If the attacker can figure how bad this code is, they can just delete their session cookie
+        echo "<h1>You have too many wrong inputs. Please try again in 20 minutes.</h1>";
+        exit();
+    }
+
     if (strlen($_POST["username"]) < 4 || strlen($_POST["username"]) > 20 ||
         strlen($_POST["password"]) < 4 || strlen($_POST["password"]) > 20) {
             echo "relogin again";
@@ -55,7 +71,8 @@ function DoLogin() {
 
         LoggedIn(-1);
     }
-    else {
+    else {                              // Failed to log in
+        $_SESSION["brute_prevent"]++;
         ShowLoginForm();
     }
 
