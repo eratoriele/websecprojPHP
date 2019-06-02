@@ -25,7 +25,7 @@ function ShowLoginForm() {
         <input type="text" id="inputUser" name="username" maxlength="20" minlength="4" class="form-control" placeholder="Username" pattern="^[a-zA-Z0-9]+$" required autofocus>
         Only alphanumeric characters <br>
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" name="password" maxlength="20" minlength="4" class="form-control" placeholder="Password" pattern="^[a-zA-Z0-9]+$" required>
+        <input type="password" id="inputPassword" name="password" maxlength="20" minlength="8" class="form-control" placeholder="Password" pattern="^[a-zA-Z0-9]+$" required>
         Only alphanumeric characters <br>
         <label for="inputEmail" class="sr-only">Email Address</label>
         <input type="text" id="inputEmail" name="email" class="form-control" placeholder="Email Address" pattern="^[a-zA-Z0-9@._-]+$" required>
@@ -41,7 +41,6 @@ function ShowLoginForm() {
         <h1>How is your life style?</h1>
         <input type="radio" name="q4" value="0" required> Straightforward <br>
         <input type="radio" name="q4" value="1" required> Embracing <br>
-        <!--<div class="g-recaptcha" data-sitekey="6LebsaIUAAAAAP_1YftW7_mk2Lz5-XqJMm4BafrO"></div> <br/>-->
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
     </form>
 
@@ -50,18 +49,11 @@ function ShowLoginForm() {
 
 function DoLogin() {
 
- /*   require_once('recaptchalib.php');
-
-    $response = $_POST["g-recaptcha-response"];
-    $verify = new recaptchalib("6LebsaIUAAAAAIpkUEH5CBrHmflalB-RC4kjxQM3", $response);*/
-
-    //if ($verify->isValid()){                // If captcha is succesfull
-
         if (($_POST["q1"] == "0" || $_POST["q1"] == "1") && ($_POST["q2"] == "0" || $_POST["q2"] == "1") &&
             ($_POST["q3"] == "0" || $_POST["q3"] == "1") && ($_POST["q4"] == "0" || $_POST["q4"] == "1") &&
             ctype_alnum($_POST["username"]) && ctype_alnum($_POST["password"]) &&
             strlen($_POST["username"]) >= 4 && strlen($_POST["username"]) <= 20 &&
-            strlen($_POST["password"]) >= 4 && strlen($_POST["password"]) <= 20) {       // If all the question results are 0 or 1,
+            strlen($_POST["password"]) >= 8 && strlen($_POST["password"]) <= 20) {       // If all the question results are 0 or 1,
                                                                                         // also both un and pw are only alphanumeric
                                                                                         // also if inputs are long enough
             $groups = $_POST["q1"] . $_POST["q2"] . $_POST["q3"] . $_POST["q4"];

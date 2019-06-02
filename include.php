@@ -64,11 +64,12 @@ function checkLastPost() {
     // calculates the difference between DateTime objects 
     $interval = date_diff($datetime1, $datetime2); 
 
-    // printing result in days format 
-    $difference = $interval->format('%d') * 1440 +  $interval->format('%h') * 60 +  $interval->format('%i');
+    // calculate how many seconds have passed
+    $difference = $interval->format('%d') * 86400 +  $interval->format('%h') * 3600 + 
+                  $interval->format('%i') * 60 + $interval->format('%s');
     
-    if ($difference < 1) {
-        echo "<h1>Please wait at least 2 minutes before making another post</h1>";
+    if ($difference < 10) {
+        echo "<h1>Please wait at least 10 seconds before making another post</h1>";
         return false;
     }
     else
